@@ -5,23 +5,23 @@ import { ArrowRight } from 'lucide-react';
 const steps = [
   {
     step: "01",
-    title: "Choose Your Crypto",
-    description: "Select which cryptocurrency you want to participate with: BTC, ETH, SOL, or TRUMP tokens.",
+    title: "Register Your Details",
+    description: "Enter your name, delivery address, and contact information so BYD can ship your car directly to you.",
   },
   {
     step: "02",
-    title: "Send to Address",
-    description: "Copy the wallet address for your chosen crypto and send your contribution from your wallet.",
+    title: "Choose Your BYD Car",
+    description: "Select your preferred BYD model: BYD Seal, BYD Atto 3, BYD Han EV, or BYD Dolphin — all brand new!",
   },
   {
     step: "03",
-    title: "Wait for Confirmation",
-    description: "The blockchain confirms your transaction automatically. This usually takes 5–10 minutes.",
+    title: "Pay Delivery Fee",
+    description: "Pay the small one-time delivery fee to cover shipping and logistics. This is the only fee required.",
   },
   {
     step: "04",
-    title: "Receive 2x Back",
-    description: "Once confirmed, the smart contract automatically sends double your contribution back to you.",
+    title: "Receive Your BYD Car",
+    description: "Your brand new BYD electric car will be delivered to your door within 7–14 business days. Enjoy!",
   },
 ];
 
@@ -31,10 +31,10 @@ export default function InstructionSection() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-black text-gray-900">
-            Step-by-Step <span className="text-red-600">Instructions</span>
+            How to Claim Your <span className="text-red-600">BYD Car</span>
           </h2>
           <p className="text-gray-600 mt-4 text-lg max-w-xl mx-auto">
-            Follow these simple steps to participate in the biggest crypto giveaway
+            Follow these simple steps to receive your brand new BYD electric car giveaway
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export default function InstructionSection() {
             className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 text-lg font-bold rounded-md"
             onClick={() => document.getElementById('participate')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            Participate Now →
+            Claim Your BYD Car Giveaway Now →
           </Button>
         </div>
       </div>

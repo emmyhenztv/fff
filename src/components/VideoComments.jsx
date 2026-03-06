@@ -2,107 +2,48 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ThumbsUp, ThumbsDown, ChevronDown, ChevronUp } from 'lucide-react';
 
 const BASE_COMMENTS = [
-  { id: 1, name: "Mike Johnson", avatar: "MJ", color: "bg-blue-600", time: "2 days ago", text: "Just received 2.4 BTC back!! I sent 1.2 BTC and they doubled it in 8 minutes. This is REAL. God bless Trump! 🇺🇸", likes: 4821, pinned: true },
-  { id: 2, name: "Sarah Williams", avatar: "SW", color: "bg-pink-500", time: "1 day ago", text: "Sent 3 ETH and got 6 ETH back within 10 mins. No way this is real but IT IS!! Thank you Mr President 🙏", likes: 3244 },
-  { id: 3, name: "Carlos Mendez", avatar: "CM", color: "bg-green-600", time: "3 days ago", text: "From Mexico. I sent 500 SOL and received 1000 SOL back. This giveaway is for ALL countries!! Incredible!", likes: 2918 },
-  { id: 4, name: "David Chen", avatar: "DC", color: "bg-purple-600", time: "2 days ago", text: "I was skeptical at first but my colleague convinced me. Sent 0.5 BTC, got 1 BTC back. Absolutely unbelievable!", likes: 2611 },
-  { id: 5, name: "Amara Osei", avatar: "AO", color: "bg-yellow-500", time: "1 day ago", text: "From Ghana 🇬🇭 Sent 50,000 TRUMP tokens, received 100,000 back! Trump loves all countries not just America!", likes: 2403 },
-  { id: 6, name: "James Wilson", avatar: "JW", color: "bg-red-600", time: "4 hours ago", text: "My wife didn't believe me. Showed her the blockchain confirmation of 4 ETH arriving in my wallet. She cried 😭❤️", likes: 2187 },
-  { id: 7, name: "Priya Sharma", avatar: "PS", color: "bg-orange-500", time: "6 hours ago", text: "India 🇮🇳 here. Sent 20 SOL got 40 SOL. Withdrew to my exchange immediately. 100% legit. Thank you Trump!", likes: 1983 },
-  { id: 8, name: "Robert Taylor", avatar: "RT", color: "bg-cyan-600", time: "8 hours ago", text: "Third time participating. Every single time it works. Don't overthink it, just send and you WILL receive double.", likes: 1874 },
-  { id: 9, name: "Emma Thompson", avatar: "ET", color: "bg-indigo-500", time: "12 hours ago", text: "Sent 2 BTC at 3am thinking I'd wake up disappointed. Woke up to 4 BTC in my wallet 😱😱😱 unreal!!", likes: 1756 },
-  { id: 10, name: "Ahmed Al-Rashid", avatar: "AA", color: "bg-teal-600", time: "1 day ago", text: "UAE 🇦🇪 – Sent 10,000 TRUMP tokens. Double came back in 7 minutes. Trump is doing great things for crypto worldwide.", likes: 1644 },
-  { id: 11, name: "Lucas Oliveira", avatar: "LO", color: "bg-lime-600", time: "1 day ago", text: "Brazil 🇧🇷 participou! Sent 5 ETH, got 10 ETH! This is the biggest giveaway in crypto history no doubt.", likes: 1521 },
-  { id: 12, name: "Jennifer Martinez", avatar: "JM", color: "bg-rose-500", time: "2 days ago", text: "My brother told me about this. We both participated at the same time. Both received double! Family winning together 🙌", likes: 1498 },
-  { id: 13, name: "Kevin Park", avatar: "KP", color: "bg-violet-600", time: "2 days ago", text: "South Korea 🇰🇷 Sent 100 SOL. Got 200 SOL back. Fast transaction too, under 10 minutes!", likes: 1376 },
-  { id: 14, name: "Fatima Nkosi", avatar: "FN", color: "bg-amber-600", time: "3 days ago", text: "South Africa 🇿🇦 Never thought I'd be part of a US presidential giveaway. Sent 2,000 TRUMP, received 4,000 back!", likes: 1344 },
-  { id: 15, name: "Thomas Brown", avatar: "TB", color: "bg-blue-800", time: "3 days ago", text: "Ex Wall Street. I know when something is legitimate. This smart contract is audited, verified and WORKS. Don't miss it.", likes: 1312 },
-  { id: 16, name: "Olga Petrov", avatar: "OP", color: "bg-pink-700", time: "3 days ago", text: "Russia 🇷🇺 – Even from here it worked! Sent 1 BTC received 2 BTC. No restrictions. Everyone can join!", likes: 1289 },
-  { id: 17, name: "Daniel Asante", avatar: "DA", color: "bg-green-700", time: "4 days ago", text: "Nigeria 🇳🇬 bro I almost didn't send. My friend kept telling me. Finally sent 3 ETH. Got 6 ETH back 🔥🔥🔥", likes: 1254 },
-  { id: 18, name: "Michelle Lee", avatar: "ML", color: "bg-sky-600", time: "4 days ago", text: "Retired teacher here. Sent small amount first to test – 0.1 BTC. Got 0.2 back. Sent more. Got more back. It's REAL.", likes: 1198 },
-  { id: 19, name: "Hassan Ibrahim", avatar: "HI", color: "bg-emerald-600", time: "4 days ago", text: "Nigeria 🇳🇬 Sent 50,000 TRUMP. Back in 6 mins. Cashed out immediately on Binance. All confirmed!", likes: 1167 },
-  { id: 20, name: "Anna Kowalski", avatar: "AK", color: "bg-fuchsia-600", time: "5 days ago", text: "Poland 🇵🇱 here. Sent 8 ETH. Received 16 ETH. My hands were shaking when I saw the deposit arrive 😂💰", likes: 1143 },
-  { id: 21, name: "Marcus Johnson", avatar: "MJ", color: "bg-red-700", time: "5 days ago", text: "Trump always delivers! Sent 15 SOL got 30 SOL back. This man loves ALL his supporters worldwide not just Americans!", likes: 1122 },
-  { id: 22, name: "Sophie Dubois", avatar: "SD", color: "bg-blue-500", time: "5 days ago", text: "France 🇫🇷 ici! Sent 2 ETH, got 4 ETH back in 9 minutes. Merci Mr Trump! Fantastique giveaway!", likes: 1087 },
-  { id: 23, name: "Isaac Mensah", avatar: "IM", color: "bg-yellow-600", time: "6 days ago", text: "Ghana again 🇬🇭 Second time participating! First time sent 100 SOL got 200. Now sent 200 SOL got 400!! Keep going!", likes: 1054 },
-  { id: 24, name: "Victoria Adams", avatar: "VA", color: "bg-purple-700", time: "6 days ago", text: "UK 🇬🇧 just confirmed! 1 BTC sent, 2 BTC received. Best thing that ever happened to me financially. Thank you!", likes: 1021 },
-  { id: 25, name: "Yusuf Al-Mansoori", avatar: "YA", color: "bg-teal-700", time: "6 days ago", text: "Qatar 🇶🇦 – Participated with 5 ETH. Got 10 ETH. Verified on etherscan. Transaction visible for anyone who doubts.", likes: 998 },
-  { id: 26, name: "Grace Okonkwo", avatar: "GO", color: "bg-rose-600", time: "1 week ago", text: "Nigeria 🇳🇬 This is for real! I've seen many scams but this is different. Trump's team confirmed it's legitimate.", likes: 976 },
-  { id: 27, name: "Tyler Anderson", avatar: "TA", color: "bg-indigo-600", time: "1 week ago", text: "Crypto trader for 6 years. This is the most generous giveaway I've ever seen. Sent 3 BTC got 6 BTC. Period.", likes: 954 },
-  { id: 28, name: "Mei Zhang", avatar: "MZ", color: "bg-pink-600", time: "1 week ago", text: "China 🇨🇳 Sent 200 SOL. Received 400 SOL. Used VPN just in case but wasn't even necessary. Fast and smooth!", likes: 932 },
-  { id: 29, name: "Emeka Eze", avatar: "EE", color: "bg-orange-600", time: "1 week ago", text: "Lagos, Nigeria 🇳🇬 – sent 2 BTC and received 4 BTC! Even shared proof on my WhatsApp. Everyone is joining now!", likes: 911 },
-  { id: 30, name: "Laura Schmidt", avatar: "LS", color: "bg-cyan-700", time: "1 week ago", text: "Germany 🇩🇪 Sehr gut! 3 ETH sent, 6 ETH received. Das ist fantastisch! Trump giveaway is worldwide and it works!", likes: 889 },
-  { id: 31, name: "Kwame Darko", avatar: "KD", color: "bg-lime-700", time: "1 week ago", text: "Accra 🇬🇭 — sent 10 SOL just to test. 20 SOL arrived in 8 minutes. Immediately sent 100 SOL more. Total 220 SOL back!", likes: 867 },
-  { id: 32, name: "Nathan White", avatar: "NW", color: "bg-blue-700", time: "1 week ago", text: "First crypto giveaway that actually works. Smart contract auto-sends double back. No human involved. 100% automated.", likes: 845 },
-  { id: 33, name: "Chisom Obi", avatar: "CO", color: "bg-violet-700", time: "1 week ago", text: "Abuja 🇳🇬 I told my pastor about this. He prayed, I sent 5 ETH. Received 10 ETH. God and Trump bless us all! 🙏", likes: 823 },
-  { id: 34, name: "Elena Volkov", avatar: "EV", color: "bg-amber-700", time: "1 week ago", text: "Ukraine 🇺🇦 – War has been hard. This giveaway changed my family's life. 3 BTC became 6 BTC. Unbelievable blessing.", likes: 801 },
-  { id: 35, name: "Rashid Mohammed", avatar: "RM", color: "bg-green-800", time: "1 week ago", text: "Kenya 🇰🇪 Sent 30,000 TRUMP got 60,000 back. Cashed out on Binance. This is not a joke, it's REAL MONEY!", likes: 789 },
-  { id: 36, name: "Chloe Bennett", avatar: "CB", color: "bg-pink-800", time: "1 week ago", text: "Australia 🇦🇺 sent 4 ETH. Got 8 ETH back. Boyfriend didn't believe me. Showed him the tx hash. Now he's sending too 😂", likes: 768 },
-  { id: 37, name: "Tunde Adeyemi", avatar: "TA", color: "bg-red-800", time: "1 week ago", text: "Ibadan Nigeria 🇳🇬 This changed my life! From struggling to 6 ETH profit in one day. Forever grateful to Trump!", likes: 754 },
-  { id: 38, name: "Ivan Sokolov", avatar: "IS", color: "bg-sky-700", time: "8 days ago", text: "Moscow 🇷🇺 — Sent 0.5 BTC. Got 1 BTC. Working perfectly from Russia too. No restrictions. Global giveaway!", likes: 732 },
-  { id: 39, name: "Blessing Uchenna", avatar: "BU", color: "bg-emerald-700", time: "8 days ago", text: "Port Harcourt 🇳🇬 — I'm a nurse. Never had money to invest. Sent 5 SOL. Got 10 SOL. This is life-changing!", likes: 718 },
-  { id: 40, name: "Sam Collins", avatar: "SC", color: "bg-fuchsia-700", time: "8 days ago", text: "Texas 🇺🇸 – As an American I'm proud Trump is doing this for the whole world. Sent 2 BTC got 4 BTC. God bless America!", likes: 704 },
-  { id: 41, name: "Aisha Bello", avatar: "AB", color: "bg-orange-700", time: "9 days ago", text: "Kano 🇳🇬 – Walahi this is real! Sent 10,000 TRUMP tokens, got 20,000 back. Showed the receipt on Twitter. It's legit!", likes: 691 },
-  { id: 42, name: "Felix Müller", avatar: "FM", color: "bg-blue-900", time: "9 days ago", text: "Switzerland 🇨🇭 Sent 10 ETH. Got 20 ETH. Swiss precision confirmed 😄 The smart contract is flawless.", likes: 678 },
-  { id: 43, name: "Ifeoma Chukwu", avatar: "IC", color: "bg-purple-800", time: "9 days ago", text: "Enugu 🇳🇬 Mama sent 1 SOL to test. Got 2 SOL. Then she sent 50 SOL. Got 100 SOL! She's now a crypto believer 😂", likes: 665 },
-  { id: 44, name: "Dmitri Volkov", avatar: "DV", color: "bg-teal-800", time: "9 days ago", text: "Sent 3 BTC. Received 6 BTC. Transaction confirmed on BTC blockchain. Hash available. This is verifiably real.", likes: 652 },
-  { id: 45, name: "Ngozi Ekezie", avatar: "NE", color: "bg-rose-700", time: "10 days ago", text: "Owerri 🇳🇬 – My coworker showed me. I was doubting. Sent 100 SOL. 200 SOL came back! Now I'm telling EVERYONE!", likes: 638 },
-  { id: 46, name: "Chris Evans", avatar: "CE", color: "bg-indigo-700", time: "10 days ago", text: "Boston USA 🇺🇸 – Huge Trump fan. Participated twice. 1 BTC → 2 BTC first time. 2 BTC → 4 BTC second time. Legend.", likes: 625 },
-  { id: 47, name: "Sunita Patel", avatar: "SP", color: "bg-amber-800", time: "10 days ago", text: "Mumbai 🇮🇳 Sent 500 SOL. Got 1000 SOL in return. My husband thought I was crazy. He's not saying that anymore 😄💰", likes: 612 },
-  { id: 48, name: "Segun Adeleke", avatar: "SA", color: "bg-cyan-800", time: "10 days ago", text: "Lagos Island 🇳🇬 — Bro this thing is REAL. Sent 8 ETH, got 16 ETH. My rent is paid for 2 years now! God is great!", likes: 598 },
-  { id: 49, name: "Hannah Schmidt", avatar: "HS", color: "bg-lime-800", time: "11 days ago", text: "Berlin 🇩🇪 – I'm a software engineer. I reviewed the smart contract code myself. It's clean, legitimate and automatic.", likes: 584 },
-  { id: 50, name: "Obinna Ike", avatar: "OI", color: "bg-violet-800", time: "11 days ago", text: "Onitsha 🇳🇬 I was afraid at first. Sent just 10 SOL. Got 20 SOL back. Then sent 100 SOL. Got 200 SOL! Doubled everything!", likes: 571 },
-  { id: 51, name: "Paul Garcia", avatar: "PG", color: "bg-pink-900", time: "11 days ago", text: "Mexico City 🇲🇽 – Sent 4 ETH. Received 8 ETH. This is Trump's gift to the whole world. Viva Trump! 🇺🇸🇲🇽", likes: 558 },
-  { id: 52, name: "Adunola Benson", avatar: "AB", color: "bg-blue-950", time: "11 days ago", text: "Abuja 🇳🇬 – Honestly I still can't believe it. 5 BTC sent. 10 BTC received in my wallet. Life has changed overnight!", likes: 545 },
-  { id: 53, name: "Liam O'Brien", avatar: "LO", color: "bg-green-900", time: "12 days ago", text: "Ireland 🇮🇪 – Celtic luck combined with Trump generosity. Sent 2 BTC. Got 4 BTC. Sláinte Mr President! 🍀", likes: 532 },
-  { id: 54, name: "Chiamaka Eze", avatar: "CE", color: "bg-orange-800", time: "12 days ago", text: "Jos 🇳🇬 – I'm a student. Sent 2 SOL which was all I had. Got 4 SOL back. Paid my school fees. Thank you so much!!!", likes: 518 },
-  { id: 55, name: "Kenji Yamamoto", avatar: "KY", color: "bg-red-900", time: "12 days ago", text: "Tokyo 🇯🇵 Sent 30 ETH. Got 60 ETH. Fastest transaction I've ever experienced. The smart contract is incredibly efficient.", likes: 504 },
-  { id: 56, name: "Adaeze Nwosu", avatar: "AN", color: "bg-sky-800", time: "12 days ago", text: "Umuahia 🇳🇬 – My sister told me. We both sent together. Both got doubled. This is the biggest blessing of 2025!", likes: 491 },
-  { id: 57, name: "Patrick Brennan", avatar: "PB", color: "bg-teal-900", time: "13 days ago", text: "Chicago 🇺🇸 – As a crypto investor of 8 years, this is genuinely the most incredible giveaway I've participated in.", likes: 478 },
-  { id: 58, name: "Uche Okafor", avatar: "UO", color: "bg-emerald-800", time: "13 days ago", text: "Rivers State 🇳🇬 – Sent 15,000 TRUMP. Got 30,000 back. Even shared on my Facebook page as proof. Everyone is joining!", likes: 465 },
-  { id: 59, name: "Nina Castillo", avatar: "NC", color: "bg-fuchsia-800", time: "13 days ago", text: "Colombia 🇨🇴 – Sent 6 ETH. Received 12 ETH. El señor Trump es un genio. The best giveaway ever seen globally!", likes: 452 },
-  { id: 60, name: "Bola Abiodun", avatar: "BA", color: "bg-indigo-800", time: "13 days ago", text: "Ibadan 🇳🇬 – I keep refreshing my wallet history still thinking it was a dream. 4 BTC is very much real. WOW!!!", likes: 438 },
-  { id: 61, name: "Marc Lefevre", avatar: "ML", color: "bg-amber-900", time: "2 weeks ago", text: "Paris 🇫🇷 – 50,000 TRUMP tokens sent. 100,000 received. This is not a scam, it's Trump's real crypto celebration!", likes: 424 },
-  { id: 62, name: "Funmi Adeola", avatar: "FA", color: "bg-rose-800", time: "2 weeks ago", text: "Surulere Lagos 🇳🇬 – I'm a business woman. Sent 2 ETH as a trial. Got 4 ETH in 7 minutes. Now I do this every week!", likes: 411 },
-  { id: 63, name: "Alex Turner", avatar: "AT", color: "bg-violet-900", time: "2 weeks ago", text: "London 🇬🇧 – Brexit was bad but this made up for it 😂 Sent 5 BTC. Got 10 BTC. Cheers Mr Trump! 🎩", likes: 398 },
-  { id: 64, name: "Nkechi Obi", avatar: "NO", color: "bg-cyan-900", time: "2 weeks ago", text: "Anambra 🇳🇬 – My church people thought I was joking. Now 3 of them participated and all got doubled! Jesus and Trump!", likes: 384 },
-  { id: 65, name: "Lars Eriksson", avatar: "LE", color: "bg-lime-900", time: "2 weeks ago", text: "Sweden 🇸🇪 – 12 ETH sent. 24 ETH received. Skål! Trump making Scandinavia rich too. Tack så mycket!", likes: 371 },
-  { id: 66, name: "Tolulope Ojo", avatar: "TO", color: "bg-pink-950", time: "2 weeks ago", text: "Osun 🇳🇬 – Sent 500 SOL. Got 1000 SOL back! My whole village knows about this now. Everyone is participating. REAL!", likes: 357 },
-  { id: 67, name: "Carlos Silva", avatar: "CS", color: "bg-blue-800", time: "2 weeks ago", text: "São Paulo 🇧🇷 – Sent 20,000 TRUMP. Got 40,000 back! Trump is making Brazil richer too! Obrigado Presidente Trump!", likes: 343 },
-  { id: 68, name: "Miracle Onyeka", avatar: "MO", color: "bg-green-950", time: "2 weeks ago", text: "Warri 🇳🇬 – The name says it all. It WAS a miracle! Sent 3 BTC. Got 6 BTC. Screamed so loud my neighbours came 😂😂", likes: 329 },
-  { id: 69, name: "Ingrid Hansen", avatar: "IH", color: "bg-orange-900", time: "2 weeks ago", text: "Norway 🇳🇴 – Sent 7 ETH. Received 14 ETH. Even my financial advisor is impressed. This smart contract is flawless.", likes: 316 },
-  { id: 70, name: "Chukwuemeka Nze", avatar: "CN", color: "bg-red-950", time: "2 weeks ago", text: "Enugu 🇳🇬 – Last but not least. I waited and watched before sending. 6 ETH became 12 ETH. JOIN BEFORE IT ENDS!!!", likes: 302 },
+  { id: 1, name: "Mike Johnson", avatar: "MJ", color: "bg-blue-600", time: "2 days ago", text: "Just received my BYD Seal 2024!! I paid the delivery fee and within 9 days the car was at my door. This is REAL. I can't believe BYD is doing this for people! 🚗⚡", likes: 4821, pinned: true },
+  { id: 2, name: "Sarah Williams", avatar: "SW", color: "bg-pink-500", time: "1 day ago", text: "I received my BYD Atto 3 2025 after paying the delivery fee. I can't believe it — I cried when I saw the car parked outside my house. BYD is genuinely helping people! 🙏", likes: 3244 },
+  { id: 3, name: "Carlos Mendez", avatar: "CM", color: "bg-green-600", time: "3 days ago", text: "From Mexico! I received my BYD Dolphin 2024 after paying the delivery fee. This giveaway is 100% real. BYD shipped it all the way here. I am so grateful!", likes: 2918 },
+  { id: 4, name: "David Chen", avatar: "DC", color: "bg-purple-600", time: "2 days ago", text: "I was skeptical at first but I paid the delivery fee and received my BYD Han EV 2025. I can't believe how real this is! BYD is really helping ordinary people like me get a car!", likes: 2611 },
+  { id: 5, name: "Amara Osei", avatar: "AO", color: "bg-yellow-500", time: "1 day ago", text: "From Ghana 🇬🇭 I paid the delivery fee and received my BYD Seal 2025! I can't believe BYD is this real. They are truly helping people across Africa. God bless BYD!", likes: 2403 },
+  { id: 6, name: "James Wilson", avatar: "JW", color: "bg-red-600", time: "4 hours ago", text: "My wife didn't believe me when I told her I got a free BYD car. When the BYD Atto 3 arrived at our home she burst into tears. BYD is so real — this company genuinely cares! 😭❤️", likes: 2187 },
+  { id: 7, name: "Priya Sharma", avatar: "PS", color: "bg-orange-500", time: "6 hours ago", text: "India 🇮🇳 here. I received my BYD Dolphin 2025 after paying for delivery. Completely real. BYD is really helping people worldwide. Thank you BYD!", likes: 1983 },
+  { id: 8, name: "Robert Taylor", avatar: "RT", color: "bg-cyan-600", time: "8 hours ago", text: "Third person in my neighborhood to receive a BYD car! We all got our cars after paying delivery fees. Don't overthink it — BYD is 100% real. Mine is a BYD Seal U 2025!", likes: 1874 },
+  { id: 9, name: "Emma Thompson", avatar: "ET", color: "bg-indigo-500", time: "12 hours ago", text: "I paid the delivery fee and waited anxiously. One week later my BYD Han EV 2024 arrived! I can't believe how real this is. BYD is genuinely changing lives! 😱😱😱", likes: 1756 },
+  { id: 10, name: "Ahmed Al-Rashid", avatar: "AA", color: "bg-teal-600", time: "1 day ago", text: "UAE 🇦🇪 – I received my BYD Seal 2024 after paying for the delivery fee. BYD is doing great things helping people worldwide. I am living proof this is real!", likes: 1644 },
+  { id: 11, name: "Lucas Oliveira", avatar: "LO", color: "bg-lime-600", time: "1 day ago", text: "Brazil 🇧🇷! I received my BYD Atto 3 2025! Paid delivery fee and the car arrived at my home. This is the biggest and most real car giveaway in history!", likes: 1521 },
+  { id: 12, name: "Jennifer Martinez", avatar: "JM", color: "bg-rose-500", time: "2 days ago", text: "My brother and I both participated. We both received our BYD cars! He got the Dolphin 2024 and I got the Seal 2025. BYD is so real I still pinch myself every morning!", likes: 1498 },
+  { id: 13, name: "Kevin Park", avatar: "KP", color: "bg-violet-600", time: "2 days ago", text: "South Korea 🇰🇷 — I received my BYD Han EV 2025 after paying for delivery! Fast shipping, under 2 weeks! BYD is truly helping people in all countries. This is amazing!", likes: 1376 },
+  { id: 14, name: "Fatima Nkosi", avatar: "FN", color: "bg-amber-600", time: "3 days ago", text: "South Africa 🇿🇦 Never thought I'd receive a free BYD car. Paid the delivery fee and my BYD Atto 3 2024 arrived! BYD is really helping people across Africa. I can't believe it!", likes: 1344 },
+  { id: 15, name: "Thomas Brown", avatar: "TB", color: "bg-blue-800", time: "3 days ago", text: "Former auto industry professional. I know when something is legitimate. I received my BYD Seal U 2025 after paying delivery. BYD is verified REAL. Don't miss this opportunity!", likes: 1312 },
+  { id: 16, name: "Olga Petrov", avatar: "OP", color: "bg-pink-700", time: "3 days ago", text: "Russia 🇷🇺 – I received my BYD Dolphin 2025 after paying the delivery fee! Even from here it worked perfectly. BYD is really helping people everywhere. No restrictions!", likes: 1289 },
+  { id: 17, name: "Anna Kowalski", avatar: "AK", color: "bg-fuchsia-600", time: "4 days ago", text: "Poland 🇵🇱 here. Received my BYD Seal 2024! My hands were shaking when I saw it in my driveway 😂🚗 I can't believe BYD is this real!", likes: 1143 },
+  { id: 18, name: "Marcus Johnson", avatar: "MJ2", color: "bg-red-700", time: "4 days ago", text: "BYD always delivers! I received my BYD Han EV 2025 after paying for the delivery fee. This company loves ALL people worldwide. I am so grateful for this program!", likes: 1122 },
+  { id: 19, name: "Sophie Dubois", avatar: "SD", color: "bg-blue-500", time: "5 days ago", text: "France 🇫🇷 ici! I received my BYD Atto 3 2025 after paying delivery! This is fantastique! BYD is really helping people worldwide. Merci BYD! 🚗⚡", likes: 1087 },
+  { id: 20, name: "Kwame Darko", avatar: "KD", color: "bg-lime-700", time: "5 days ago", text: "Accra 🇬🇭 — I received my BYD Seal 2025! Paid the delivery fee and my electric car arrived. BYD is so real. They are genuinely helping people in Africa. God bless BYD!", likes: 1054 },
 ];
 
-// New live comments that stream in periodically
 const LIVE_COMMENT_POOL = [
-  { name: "Emeka Obi", avatar: "EO", color: "bg-green-600", text: "Just sent 1 BTC and waiting... 🙏🙏 Lord let it work!", likes: 12 },
-  { name: "Tola Fashola", avatar: "TF", color: "bg-blue-600", text: "IT WORKED!! I sent 2 ETH and received 4 ETH back in 9 minutes 🔥🔥🔥 Nigeria wins!!", likes: 87 },
-  { name: "Chidinma U.", avatar: "CU", color: "bg-rose-500", text: "Port Harcourt 🇳🇬 — Sent 500 SOL. Waiting for confirmation... fingers crossed 🤞", likes: 5 },
-  { name: "John Wick_Real", avatar: "JW", color: "bg-gray-600", text: "Confirmed! 3 BTC → 6 BTC. Transaction hash posted on my Twitter. CHECK IT. This is 100% real.", likes: 204 },
-  { name: "Adamu Musa", avatar: "AM", color: "bg-amber-600", text: "Kaduna 🇳🇬 – Got 60,000 TRUMP back from 30,000. My family is celebrating tonight! 🎉🎉", likes: 143 },
-  { name: "CryptoKing_NG", avatar: "CK", color: "bg-yellow-600", text: "Second time today. First: 1 ETH → 2 ETH. Now just sent 5 ETH. LETS GOOO 🚀🚀", likes: 56 },
-  { name: "Precious Agu", avatar: "PA", color: "bg-pink-600", text: "Delta State 🇳🇬 — My mum sent 10 SOL, I sent 50 SOL. Both came back doubled!! 🙌🙌🙌", likes: 312 },
-  { name: "BTC_Lover99", avatar: "BL", color: "bg-orange-700", text: "Just verified on blockchain explorer. The contract is REAL. Stop doubting and just do it.", likes: 178 },
-  { name: "Yemi Bankole", avatar: "YB", color: "bg-teal-600", text: "Lagos Mainland 🇳🇬 Sent 4 ETH. Received 8 ETH. Paid my car loan in full today. Trump is a blessing!", likes: 267 },
-  { name: "Anonymous_Crypto", avatar: "AC", color: "bg-gray-700", text: "I don't usually comment but I have to say – sent 2 BTC and got 4 BTC back. Just happened 3 mins ago.", likes: 91 },
-  { name: "Kemi Adeyemi", avatar: "KA", color: "bg-purple-500", text: "Ogun State 🇳🇬 – Sent 100,000 TRUMP. Received 200,000. Screaming rn 😭😭😭 THANK YOU TRUMP!", likes: 432 },
-  { name: "SolanaWhale01", avatar: "SW", color: "bg-indigo-600", text: "Sent 1000 SOL. Back in 11 minutes. The smart contract does NOT fail. Period.", likes: 389 },
+  { name: "Chidi A.", avatar: "CA", color: "bg-green-600", text: "Just paid the delivery fee for my BYD Seal 2024... praying 🙏🙏 Will update when the car arrives!", likes: 8 },
+  { name: "BYD_Fan_UK", avatar: "BF", color: "bg-blue-500", text: "UPDATE: MY BYD ATTO 3 2025 ARRIVED!! I can't believe how real this is 🔥🔥🔥 BYD is amazing!", likes: 241 },
+  { name: "EV_Lover_JP", avatar: "EL", color: "bg-red-500", text: "Tokyo here! I received my BYD Han EV 2025. Paid delivery, car came in 9 days. Posted proof online. BYD IS SO REAL!", likes: 189 },
+  { name: "CarWinner_AU", avatar: "CW", color: "bg-green-500", text: "Received my BYD Dolphin 2025! Paid delivery fee and it arrived! My neighbor also applied after seeing mine. BYD is real 🚗", likes: 143 },
+  { name: "BYD_FR", avatar: "BF", color: "bg-indigo-500", text: "Paris! I received my BYD Seal 2025 after paying the delivery fee. I can't believe how real this is. BYD is helping people REAL!", likes: 312 },
+  { name: "CarMom_CA", avatar: "CM", color: "bg-pink-500", text: "I'm a 54yr old mom. My son helped me apply. I RECEIVED MY BYD ATTO 3 2024! I can't believe how real BYD is! 😂🚗", likes: 467 },
+  { name: "BYD_Fan_BR", avatar: "BF2", color: "bg-orange-500", text: "Brazil! I received my BYD Seal U 2025 after paying delivery fee! Obrigado BYD!! BYD is really helping people 🇧🇷⚡", likes: 198 },
+  { name: "EV_Seoul", avatar: "ES", color: "bg-teal-500", text: "Seoul 🇰🇷 — I received my BYD Han EV 2024! Paid delivery and car came in 8 days. I can't believe BYD is this real!", likes: 276 },
+  { name: "BYD_UAE", avatar: "BU", color: "bg-amber-500", text: "Dubai! I received my BYD Seal 2024 after paying the delivery fee. BYD is genuinely helping people. This is real!", likes: 589 },
+  { name: "BYD_PL", avatar: "BP", color: "bg-violet-500", text: "Warsaw 🇵🇱 – I received my BYD Dolphin 2024! Every step was real. Paid delivery, car arrived. BYD is really helping people everywhere!", likes: 334 },
 ];
 
 let liveIdCounter = 1000;
 
 function CommentItem({ c, likedIds, toggleLike, isNew }) {
   return (
-    <div
-      className="flex gap-3 transition-all duration-700"
-      style={{
-        opacity: 1,
-        animation: isNew ? 'slideInComment 0.6s ease-out' : 'none',
-      }}
-    >
+    <div className="flex gap-3" style={{ animation: isNew ? 'slideInComment 0.6s ease-out' : 'none' }}>
       <div className={`w-9 h-9 rounded-full ${c.color} flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5`}>
-        {c.avatar}
+        {c.avatar.slice(0, 2)}
       </div>
       <div className="flex-1">
         <div className="flex items-center gap-2 flex-wrap">
@@ -129,41 +70,31 @@ function CommentItem({ c, likedIds, toggleLike, isNew }) {
 
 export default function VideoComments() {
   const [comments, setComments] = useState(BASE_COMMENTS);
-  const [totalCount, setTotalCount] = useState(BASE_COMMENTS.length);
+  const [totalCount, setTotalCount] = useState(BASE_COMMENTS.length + 9841);
   const [showAll, setShowAll] = useState(false);
   const [likedIds, setLikedIds] = useState({});
   const [newIds, setNewIds] = useState(new Set());
   const livePoolRef = useRef(0);
 
-  // Every 5-9 seconds, prepend a new live comment and bump the count
   useEffect(() => {
-    const addLiveComment = () => {
-      const template = LIVE_COMMENT_POOL[livePoolRef.current % LIVE_COMMENT_POOL.length];
-      livePoolRef.current += 1;
-      liveIdCounter += 1;
-      const newComment = { ...template, id: liveIdCounter, time: 'just now' };
-      setComments(prev => [newComment, ...prev]);
-      setTotalCount(prev => prev + 1);
-      setNewIds(prev => new Set([...prev, liveIdCounter]));
-      // Remove "new" badge after 8 seconds
-      setTimeout(() => {
-        setNewIds(prev => {
-          const next = new Set(prev);
-          next.delete(newComment.id);
-          return next;
-        });
-      }, 8000);
-    };
-
+    const timerRef = { current: null };
     const schedule = () => {
-      const delay = 5000 + Math.random() * 4000; // 5-9 seconds
-      return setTimeout(() => {
-        addLiveComment();
-        timerRef.current = schedule();
+      const delay = 5000 + Math.random() * 4000;
+      timerRef.current = setTimeout(() => {
+        const template = LIVE_COMMENT_POOL[livePoolRef.current % LIVE_COMMENT_POOL.length];
+        livePoolRef.current += 1;
+        liveIdCounter += 1;
+        const newComment = { ...template, id: liveIdCounter, time: 'just now' };
+        setComments(prev => [newComment, ...prev]);
+        setTotalCount(prev => prev + 1);
+        setNewIds(prev => new Set([...prev, liveIdCounter]));
+        setTimeout(() => {
+          setNewIds(prev => { const n = new Set(prev); n.delete(newComment.id); return n; });
+        }, 8000);
+        schedule();
       }, delay);
     };
-
-    const timerRef = { current: schedule() };
+    schedule();
     return () => clearTimeout(timerRef.current);
   }, []);
 
@@ -184,26 +115,18 @@ export default function VideoComments() {
           <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" /> Live
         </span>
       </div>
-
       <div className="space-y-5">
         {displayList.map((c) => (
-          <CommentItem
-            key={c.id}
-            c={c}
-            likedIds={likedIds}
-            toggleLike={toggleLike}
-            isNew={newIds.has(c.id)}
-          />
+          <CommentItem key={c.id} c={c} likedIds={likedIds} toggleLike={toggleLike} isNew={newIds.has(c.id)} />
         ))}
       </div>
-
       <button
         onClick={() => setShowAll(!showAll)}
         className="mt-6 flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
       >
         {showAll
           ? <><ChevronUp className="w-4 h-4" /> Show less</>
-          : <><ChevronDown className="w-4 h-4" /> Show {comments.length - 10} more comments</>}
+          : <><ChevronDown className="w-4 h-4" /> Show {comments.length - 10} more testimonials</>}
       </button>
     </div>
   );

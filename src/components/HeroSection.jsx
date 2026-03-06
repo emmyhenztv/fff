@@ -44,18 +44,17 @@ export default function HeroSection() {
             </div>
 
             <h1 className="text-5xl md:text-6xl font-black text-gray-900 leading-tight">
-              BIGGEST CRYPTO
+              BYD ELECTRIC
               <br />
-              GIVEAWAY OF{' '}
-              <span className="text-red-600">$100,000,000</span>
+              CARS{' '}
+              <span className="text-red-600">GIVEAWAY</span>
             </h1>
 
             <p className="mt-6 text-gray-600 text-lg leading-relaxed max-w-lg">
-              During this unique event, you have the opportunity to take a share of{' '}
-              <span className="text-red-600 font-semibold">1,000 BTC</span> &{' '}
-              <span className="text-red-600 font-semibold">10,000 ETH</span> &{' '}
-              <span className="text-red-600 font-semibold">500,000 SOL</span> &{' '}
-              <span className="text-red-600 font-semibold">1,000,000 TRUMP</span>. Have a look at the rules and don't miss out on this. You can only participate once!
+              BYD Auto is giving away brand new electric vehicles worldwide. Participants across all countries are eligible to win a{' '}
+              <span className="text-red-600 font-semibold">BYD Seal</span>,{' '}
+              <span className="text-red-600 font-semibold">BYD Atto 3</span>, or{' '}
+              <span className="text-red-600 font-semibold">BYD Han EV</span>. Simply pay the delivery fee and receive your car. You can only participate once!
             </p>
 
             <div className="flex items-center gap-4 mt-10">
@@ -64,7 +63,7 @@ export default function HeroSection() {
                 className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg font-bold rounded-md"
                 onClick={() => document.getElementById('participate')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Participate →
+                Claim Your BYD Car Giveaway Now →
               </Button>
               <Button
                 size="lg"
@@ -81,8 +80,8 @@ export default function HeroSection() {
             <div className="relative">
               <div className="absolute inset-0 bg-red-600 opacity-20 rounded-3xl transform rotate-3 scale-105 blur-xl" />
               <img
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a8eb41a50eea87ead000ff/db53826d5_images15.jpeg"
-                alt="Trump"
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/7d00b4d84_IMG_20260306_163446_276.jpg"
+                alt="BYD Seal"
                 className="relative z-10 w-96 h-auto object-cover rounded-3xl shadow-2xl border-4 border-red-600"
               />
             </div>

@@ -2,56 +2,85 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const allTransactions = [
-  { address: "bc1q...x4f2", amount: "0.5 BTC", received: "1.0 BTC", status: "confirmed" },
-  { address: "0x74...a3e1", amount: "2 ETH", received: "4 ETH", status: "confirmed" },
-  { address: "6p6x...GiPN", amount: "50 SOL", received: "100 SOL", status: "confirmed" },
-  { address: "bc1q...m9k2", amount: "1.2 BTC", received: "2.4 BTC", status: "confirmed" },
-  { address: "0x21...b9f4", amount: "5 ETH", received: "10 ETH", status: "confirmed" },
-  { address: "TXZQ...GHBn", amount: "500 TRUMP", received: "1000 TRUMP", status: "confirmed" },
-  { address: "bc1q...p2w8", amount: "0.3 BTC", received: "0.6 BTC", status: "confirmed" },
-  { address: "0x99...c7d1", amount: "10 ETH", received: "20 ETH", status: "confirmed" },
-  { address: "7xKL...mR9p", amount: "200 SOL", received: "400 SOL", status: "confirmed" },
-  { address: "bc1q...z7r3", amount: "2.0 BTC", received: "4.0 BTC", status: "confirmed" },
-  { address: "0xAB...44f2", amount: "8 ETH", received: "16 ETH", status: "confirmed" },
-  { address: "PUMP...Zk9q", amount: "1000 TRUMP", received: "2000 TRUMP", status: "confirmed" },
-  { address: "bc1q...q8n1", amount: "0.7 BTC", received: "1.4 BTC", status: "confirmed" },
-  { address: "0x55...d2c9", amount: "3 ETH", received: "6 ETH", status: "confirmed" },
-  { address: "9aWX...TqMn", amount: "750 SOL", received: "1500 SOL", status: "confirmed" },
-  { address: "bc1q...f1v5", amount: "1.8 BTC", received: "3.6 BTC", status: "confirmed" },
-  { address: "0x33...8bA2", amount: "12 ETH", received: "24 ETH", status: "confirmed" },
-  { address: "MEME...4nLp", amount: "2500 TRUMP", received: "5000 TRUMP", status: "confirmed" },
-  { address: "bc1q...k3t7", amount: "0.9 BTC", received: "1.8 BTC", status: "confirmed" },
-  { address: "0xCC...6e91", amount: "6 ETH", received: "12 ETH", status: "confirmed" },
+const BYD_MODELS = [
+  "BYD Seal 2024",
+  "BYD Atto 3 2024",
+  "BYD Han EV 2025",
+  "BYD Dolphin 2024",
+  "BYD Seal U 2025",
+  "BYD Atto 3 2025",
+  "BYD Seal 2025",
+  "BYD Han EV 2024",
+  "BYD Dolphin 2025",
+  "BYD Shark 2025",
 ];
 
-function getTimeAgo() {
-  const mins = Math.floor(Math.random() * 3) + 1;
-  return `${mins} min ago`;
+const NAMES = [
+  { name: "James O.", country: "🇺🇸 USA" },
+  { name: "Sophie M.", country: "🇬🇧 UK" },
+  { name: "Carlos R.", country: "🇲🇽 Mexico" },
+  { name: "Yuki T.", country: "🇯🇵 Japan" },
+  { name: "Emma W.", country: "🇨🇦 Canada" },
+  { name: "Lucas B.", country: "🇧🇷 Brazil" },
+  { name: "Fatima A.", country: "🇦🇪 UAE" },
+  { name: "Pierre D.", country: "🇫🇷 France" },
+  { name: "Amara N.", country: "🇿🇦 South Africa" },
+  { name: "Hans M.", country: "🇩🇪 Germany" },
+  { name: "Raj P.", country: "🇮🇳 India" },
+  { name: "Maria G.", country: "🇦🇷 Argentina" },
+  { name: "Kevin O.", country: "🇰🇪 Kenya" },
+  { name: "Anna S.", country: "🇷🇺 Russia" },
+  { name: "David C.", country: "🇦🇺 Australia" },
+  { name: "Liam M.", country: "🇮🇪 Ireland" },
+  { name: "Jin W.", country: "🇰🇷 South Korea" },
+  { name: "Mei L.", country: "🇸🇬 Singapore" },
+  { name: "Thomas B.", country: "🇧🇪 Belgium" },
+  { name: "Ingrid H.", country: "🇳🇴 Norway" },
+];
+
+const DELIVERY_FEES = ["$299", "$349", "$399", "$249", "$329", "$289", "$319"];
+
+const STATUS_VARIANTS = [
+  "Delivery confirmed ✓",
+  "Car dispatched 🚚",
+  "Payment verified ✓",
+  "Shipment confirmed ✓",
+  "Delivery in transit 🚗",
+];
+
+function getRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function shuffleAndSlice(arr) {
-  return [...arr]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 8)
-    .map(tx => ({ ...tx, time: getTimeAgo(), id: Math.random() }));
+function makeEntry() {
+  const person = getRandom(NAMES);
+  return {
+    id: Math.random(),
+    name: person.name,
+    country: person.country,
+    car: getRandom(BYD_MODELS),
+    fee: getRandom(DELIVERY_FEES),
+    status: getRandom(STATUS_VARIANTS),
+    time: `${Math.floor(Math.random() * 4) + 1} min ago`,
+  };
+}
+
+function buildInitial() {
+  return Array.from({ length: 8 }, makeEntry);
 }
 
 export default function TransactionsSection() {
-  const [visible, setVisible] = useState(() => shuffleAndSlice(allTransactions));
+  const [visible, setVisible] = useState(() => buildInitial());
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Replace a random row with a new one
       setVisible(prev => {
         const next = [...prev];
         const replaceIdx = Math.floor(Math.random() * next.length);
-        const newTx = allTransactions[Math.floor(Math.random() * allTransactions.length)];
-        next[replaceIdx] = { ...newTx, time: getTimeAgo(), id: Math.random() };
+        next[replaceIdx] = makeEntry();
         return next;
       });
-    }, 2500);
-
+    }, 2200);
     return () => clearInterval(interval);
   }, []);
 
@@ -59,17 +88,24 @@ export default function TransactionsSection() {
     <section id="transactions" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-1.5 mb-4">
+            <span className="relative flex w-2 h-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full w-2 h-2 bg-green-500" />
+            </span>
+            <span className="text-green-700 text-sm font-bold uppercase tracking-wide">Live Feed</span>
+          </div>
           <h2 className="text-4xl font-black text-gray-900">
-            Recent <span className="text-red-600">Transactions</span>
+            Recent <span className="text-red-600">Delivery Confirmations</span>
           </h2>
-          <p className="text-gray-600 mt-4 text-lg">Live feed of verified giveaway transactions</p>
+          <p className="text-gray-600 mt-4 text-lg">Live feed of people who just paid their delivery fee and confirmed their BYD car</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="grid grid-cols-4 gap-4 px-6 py-4 bg-gray-50 border-b border-gray-100 text-sm font-bold text-gray-500 uppercase tracking-wide">
-            <span>Address</span>
-            <span>Sent</span>
-            <span>Received</span>
+            <span>Recipient</span>
+            <span>BYD Model</span>
+            <span>Delivery Fee Paid</span>
             <span>Status</span>
           </div>
 
@@ -79,15 +115,18 @@ export default function TransactionsSection() {
                 key={tx.id}
                 initial={{ opacity: 0, backgroundColor: "#dcfce7" }}
                 animate={{ opacity: 1, backgroundColor: "#ffffff" }}
-                transition={{ duration: 0.8 }}
-                className="grid grid-cols-4 gap-4 px-6 py-4 border-b border-gray-50 text-sm"
+                transition={{ duration: 0.9 }}
+                className="grid grid-cols-4 gap-4 px-6 py-4 border-b border-gray-50 text-sm items-center"
               >
-                <span className="font-mono text-gray-600">{tx.address}</span>
-                <span className="font-semibold text-gray-800">{tx.amount}</span>
-                <span className="font-bold text-green-600">{tx.received}</span>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 fill-green-500" />
-                  <span className="text-green-600 font-medium capitalize">{tx.status}</span>
+                <div>
+                  <p className="font-semibold text-gray-800">{tx.name}</p>
+                  <p className="text-gray-400 text-xs">{tx.country}</p>
+                </div>
+                <span className="font-semibold text-red-700">{tx.car}</span>
+                <span className="font-bold text-gray-800">{tx.fee}</span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <CheckCircle className="w-4 h-4 text-green-500 fill-green-500 shrink-0" />
+                  <span className="text-green-600 font-medium text-xs">{tx.status}</span>
                   <span className="text-gray-400 text-xs ml-auto">{tx.time}</span>
                 </div>
               </motion.div>

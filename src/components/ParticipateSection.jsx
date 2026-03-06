@@ -1,85 +1,344 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, Check, Clock, Users } from 'lucide-react';
-import { toast } from "sonner";
-import { base44 } from '@/api/base44Client';
+import { Clock, Users, Zap, Shield, Globe, Star } from 'lucide-react';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 
-const BTC_LOGO = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png";
-const ETH_LOGO = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/628px-Ethereum_logo_2014.svg.png";
-const SOL_LOGO = "https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png";
-const TRUMP_LOGO = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a8eb41a50eea87ead000ff/3b869c91c_images16.jpeg";
-
-const defaultWallets = [
-  { index: 0, name: "Bitcoin", symbol: "BTC", address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", min: "0.1 BTC", max: "20 BTC", logo: BTC_LOGO },
-  { index: 1, name: "Ethereum", symbol: "ETH", address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", min: "1 ETH", max: "500 ETH", logo: ETH_LOGO },
-  { index: 2, name: "Solana", symbol: "SOL", address: "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN", min: "10 SOL", max: "10,000 SOL", logo: SOL_LOGO },
-  { index: 3, name: "TRUMP Token", symbol: "TRUMP", address: "TXZQuyCasxN42bjAcYpP2xwYVMCF6gHBnv", min: "100 TRUMP", max: "100,000 TRUMP", logo: TRUMP_LOGO },
+const DEFAULT_CARS = [
+  {
+    index: 0,
+    name: "BYD Seal",
+    year: "2025",
+    tier: "Performance Sedan",
+    fee: "$299",
+    delivery: "7–10 Business Days",
+    range: "570 km Range",
+    power: "390 kW Dual Motor",
+    color: "from-gray-900 to-gray-800",
+    badge: "🏆 Most Popular",
+    badgeColor: "bg-yellow-400 text-yellow-900",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/fc7c3ae25_IMG-20260306-WA0536.jpg",
+  },
+  {
+    index: 1,
+    name: "BYD Atto 3",
+    tier: "Premium SUV",
+    year: "2025",
+    fee: "$349",
+    delivery: "5–7 Business Days",
+    range: "480 km Range",
+    power: "150 kW Electric",
+    color: "from-sky-800 to-sky-900",
+    badge: "⚡ Express Delivery",
+    badgeColor: "bg-blue-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/397f76f88_IMG-20260306-WA0533.jpg",
+  },
+  {
+    index: 2,
+    name: "BYD Han EV",
+    tier: "Luxury Flagship",
+    year: "2025",
+    fee: "$399",
+    delivery: "3–5 Business Days",
+    range: "605 km Range",
+    power: "380 kW Quad Motor",
+    color: "from-red-800 to-red-900",
+    badge: "👑 Premium",
+    badgeColor: "bg-purple-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/3bf711821_IMG-20260306-WA0532.jpg",
+  },
+  {
+    index: 3,
+    name: "BYD Dolphin",
+    tier: "Smart Compact",
+    year: "2025",
+    fee: "$249",
+    delivery: "10–14 Business Days",
+    range: "427 km Range",
+    power: "130 kW Electric",
+    color: "from-emerald-700 to-emerald-900",
+    badge: "💚 Best Value",
+    badgeColor: "bg-green-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/4a267b535_IMG-20260306-WA0530.jpg",
+  },
+  {
+    index: 4,
+    name: "BYD Sea Lion 07",
+    tier: "Sport SUV",
+    year: "2025",
+    fee: "$379",
+    delivery: "5–8 Business Days",
+    range: "520 km Range",
+    power: "310 kW AWD",
+    color: "from-violet-800 to-violet-900",
+    badge: "🔥 New Arrival",
+    badgeColor: "bg-orange-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/2eaef0a2d_IMG-20260306-WA0529.jpg",
+  },
+  {
+    index: 5,
+    name: "BYD Yangwang U7",
+    tier: "Ultra Luxury",
+    year: "2025",
+    fee: "$499",
+    delivery: "3–5 Business Days",
+    range: "680 km Range",
+    power: "960 kW Quad Motor",
+    color: "from-slate-800 to-slate-900",
+    badge: "💎 Ultra Luxury",
+    badgeColor: "bg-yellow-500 text-black",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/e8b958f38_IMG-20260306-WA0528.jpg",
+  },
+  {
+    index: 6,
+    name: "BYD Seagull",
+    tier: "City EV",
+    year: "2025",
+    fee: "$199",
+    delivery: "10–14 Business Days",
+    range: "405 km Range",
+    power: "55 kW Electric",
+    color: "from-cyan-700 to-cyan-900",
+    badge: "🌊 City Special",
+    badgeColor: "bg-cyan-400 text-cyan-900",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/e9f6841f6_IMG-20260306-WA0531.jpg",
+  },
+  {
+    index: 7,
+    name: "BYD Sealion 6",
+    tier: "Family SUV",
+    year: "2025",
+    fee: "$329",
+    delivery: "7–10 Business Days",
+    range: "500 km Range",
+    power: "204 kW PHEV",
+    color: "from-indigo-800 to-indigo-900",
+    badge: "👨‍👩‍👧 Family Pick",
+    badgeColor: "bg-pink-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/99f4dd363_IMG-20260306-WA0529.jpg",
+  },
+  {
+    index: 8,
+    name: "BYD Seal U",
+    tier: "Executive SUV",
+    year: "2025",
+    fee: "$359",
+    delivery: "5–7 Business Days",
+    range: "543 km Range",
+    power: "230 kW PHEV",
+    color: "from-zinc-700 to-zinc-900",
+    badge: "⭐ Top Rated",
+    badgeColor: "bg-amber-400 text-amber-900",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/c66fcf75c_IMG-20260306-WA0534.jpg",
+  },
+  {
+    index: 9,
+    name: "BYD Ocean-X",
+    tier: "Sports Coupe",
+    year: "2025",
+    fee: "$449",
+    delivery: "5–8 Business Days",
+    range: "600 km Range",
+    power: "450 kW RWD",
+    color: "from-rose-800 to-rose-900",
+    badge: "🏎️ Sports",
+    badgeColor: "bg-red-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/0d014f1ca_IMG-20260306-WA0535.jpg",
+  },
+  {
+    index: 10,
+    name: "BYD Seal Blue",
+    tier: "Performance Sedan",
+    year: "2025",
+    fee: "$319",
+    delivery: "7–10 Business Days",
+    range: "570 km Range",
+    power: "390 kW Dual Motor",
+    color: "from-sky-700 to-sky-900",
+    badge: "🔵 Ocean Blue",
+    badgeColor: "bg-sky-400 text-sky-900",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/1b5a8a797_IMG-20260306-WA0517.jpg",
+  },
+  {
+    index: 11,
+    name: "BYD Seal Black",
+    tier: "Performance Sedan",
+    year: "2025",
+    fee: "$339",
+    delivery: "5–7 Business Days",
+    range: "570 km Range",
+    power: "390 kW Dual Motor",
+    color: "from-gray-900 to-black",
+    badge: "⚫ Midnight Edition",
+    badgeColor: "bg-gray-700 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/23a40b761_IMG-20260306-WA0519.jpg",
+  },
+  {
+    index: 12,
+    name: "BYD Han Premium",
+    tier: "Luxury Interior",
+    year: "2025",
+    fee: "$429",
+    delivery: "3–5 Business Days",
+    range: "605 km Range",
+    power: "380 kW AWD",
+    color: "from-slate-700 to-slate-900",
+    badge: "👑 Luxury",
+    badgeColor: "bg-amber-400 text-amber-900",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/07d6128a0_IMG-20260306-WA0521.jpg",
+  },
+  {
+    index: 13,
+    name: "BYD Han Matte",
+    tier: "Stealth Edition",
+    year: "2025",
+    fee: "$459",
+    delivery: "5–7 Business Days",
+    range: "620 km Range",
+    power: "380 kW AWD",
+    color: "from-zinc-800 to-zinc-950",
+    badge: "🖤 Stealth",
+    badgeColor: "bg-zinc-600 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/9123cff4f_IMG-20260306-WA0523.jpg",
+  },
+  {
+    index: 14,
+    name: "BYD Seagull White",
+    tier: "City EV",
+    year: "2025",
+    fee: "$219",
+    delivery: "10–14 Business Days",
+    range: "405 km Range",
+    power: "55 kW Electric",
+    color: "from-neutral-600 to-neutral-800",
+    badge: "🤍 Clean White",
+    badgeColor: "bg-white text-gray-800",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/191f5df61_IMG-20260306-WA0522.jpg",
+  },
+  {
+    index: 15,
+    name: "BYD Atto 3 Interior",
+    tier: "Premium Interior",
+    year: "2025",
+    fee: "$359",
+    delivery: "5–7 Business Days",
+    range: "480 km Range",
+    power: "150 kW Electric",
+    color: "from-blue-800 to-blue-950",
+    badge: "🏠 Premium Cabin",
+    badgeColor: "bg-blue-400 text-blue-900",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/219e35b43_IMG-20260306-WA0524.jpg",
+  },
+  {
+    index: 16,
+    name: "BYD Dolphin Blue",
+    tier: "Smart Compact",
+    year: "2025",
+    fee: "$259",
+    delivery: "10–14 Business Days",
+    range: "427 km Range",
+    power: "130 kW Electric",
+    color: "from-blue-600 to-blue-800",
+    badge: "💙 Ocean Blue",
+    badgeColor: "bg-blue-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/71926239e_IMG-20260306-WA0525.jpg",
+  },
+  {
+    index: 17,
+    name: "BYD e2",
+    tier: "Urban EV",
+    year: "2025",
+    fee: "$189",
+    delivery: "10–14 Business Days",
+    range: "360 km Range",
+    power: "70 kW Electric",
+    color: "from-gray-600 to-gray-800",
+    badge: "🏙️ Urban Pick",
+    badgeColor: "bg-gray-400 text-gray-900",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/1878bf446_IMG-20260306-WA0526.jpg",
+  },
+  {
+    index: 18,
+    name: "BYD Dolphin Plus",
+    tier: "Sport Compact",
+    year: "2025",
+    fee: "$279",
+    delivery: "7–10 Business Days",
+    range: "450 km Range",
+    power: "160 kW Electric",
+    color: "from-blue-700 to-indigo-900",
+    badge: "➕ Plus Edition",
+    badgeColor: "bg-indigo-500 text-white",
+    img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/8bdcfa757_IMG-20260306-WA0527.jpg",
+  },
 ];
 
-function CryptoCard({ wallet }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(wallet.address);
-    setCopied(true);
-    toast.success(`${wallet.symbol} address copied!`);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
+function CarCard({ car }) {
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-shadow">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            {wallet.logo
-              ? <>
-                  <img src={wallet.logo} alt={wallet.symbol} className="w-10 h-10 rounded-full object-contain bg-gray-50 border border-gray-100 p-1 relative z-10" />
-                  <span className="absolute inset-0 rounded-full animate-ping opacity-30 bg-green-400" />
-                </>
-              : <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">{wallet.symbol?.slice(0, 2)}</div>
-            }
-          </div>
-          <div>
-            <p className="font-bold text-gray-900">{wallet.name}</p>
-            <p className="text-xs text-gray-500">{wallet.symbol}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-1 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
-          <span className="relative flex w-1.5 h-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-            <span className="relative inline-flex rounded-full w-1.5 h-1.5 bg-green-500" />
-          </span>
-          <span className="text-green-700 text-xs font-bold">LIVE</span>
-        </div>
+    <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+      {/* Card Header */}
+      <div className={`bg-gradient-to-br ${car.color} p-5 relative`}>
+        <span className={`absolute top-3 right-3 text-xs font-bold px-2 py-1 rounded-full ${car.badgeColor}`}>
+          {car.badge}
+        </span>
+        <p className="text-white/70 text-xs font-semibold uppercase tracking-widest">{car.tier}</p>
+        <h3 className="text-white text-xl font-black mt-1">{car.name}</h3>
+        <p className="text-white/60 text-sm">{car.year} Model</p>
+        <img
+          src={car.img}
+          alt={car.name}
+          className="w-full h-40 object-cover rounded-xl mt-3 border-2 border-white/20"
+        />
       </div>
 
-      <div className="mb-4">
-        <p className="text-xs text-gray-500 mb-1">Send address</p>
-        <div className="bg-gray-50 rounded-lg p-3 flex items-center justify-between gap-2">
-          <code className="text-xs text-gray-700 break-all flex-1">{wallet.address}</code>
-          <button onClick={handleCopy} className="shrink-0 text-gray-400 hover:text-red-600 transition-colors">
-            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+      {/* Card Body */}
+      <div className="p-5 flex flex-col flex-1">
+        {/* Specs */}
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="bg-gray-50 rounded-xl p-2.5 flex items-center gap-2">
+            <Zap className="w-3.5 h-3.5 text-red-500 shrink-0" />
+            <div>
+              <p className="text-xs text-gray-400">Power</p>
+              <p className="text-xs font-bold text-gray-800">{car.power}</p>
+            </div>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-2.5 flex items-center gap-2">
+            <Star className="w-3.5 h-3.5 text-red-500 shrink-0" />
+            <div>
+              <p className="text-xs text-gray-400">Range</p>
+              <p className="text-xs font-bold text-gray-800">{car.range}</p>
+            </div>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-2.5 flex items-center gap-2">
+            <Globe className="w-3.5 h-3.5 text-red-500 shrink-0" />
+            <div>
+              <p className="text-xs text-gray-400">Ships To</p>
+              <p className="text-xs font-bold text-gray-800">All Countries</p>
+            </div>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-2.5 flex items-center gap-2">
+            <Clock className="w-3.5 h-3.5 text-red-500 shrink-0" />
+            <div>
+              <p className="text-xs text-gray-400">Delivery</p>
+              <p className="text-xs font-bold text-gray-800">{car.delivery}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Delivery Fee */}
+        <div className="bg-red-50 border border-red-100 rounded-2xl p-4 mb-4 text-center">
+          <p className="text-xs text-gray-500 mb-1">One-Time Delivery Fee</p>
+          <p className="text-3xl font-black text-red-600">{car.fee}</p>
+          <p className="text-xs text-gray-400 mt-1">Covers shipping, customs & logistics</p>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-auto">
+          <button
+            onClick={() => window.location.href = createPageUrl(`Participate?wallet=${car.index}`)}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-black py-3.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2"
+          >
+            <span>🚗 Claim This BYD Now →</span>
           </button>
-        </div>
-      </div>
-
-      <div className="flex justify-between text-sm">
-        <div><span className="text-gray-500">Min: </span><span className="font-semibold text-gray-800">{wallet.min}</span></div>
-        <div><span className="text-gray-500">Max: </span><span className="font-semibold text-gray-800">{wallet.max}</span></div>
-      </div>
-
-      <div className="mt-4 bg-red-50 rounded-lg p-3 text-center cursor-pointer hover:bg-red-100 transition-colors relative overflow-hidden"
-        onClick={() => window.location.href = createPageUrl(`Participate?wallet=${wallet.index}`)}>
-        <div className="flex items-center justify-center gap-2">
-          <span className="relative flex w-2 h-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex rounded-full w-2 h-2 bg-red-500" />
-          </span>
-          <p className="text-red-600 font-bold text-sm animate-pulse">Send → Receive 2x Back! →</p>
-          <span className="relative flex w-2 h-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex rounded-full w-2 h-2 bg-red-500" />
-          </span>
         </div>
       </div>
     </div>
@@ -88,23 +347,25 @@ function CryptoCard({ wallet }) {
 
 export default function ParticipateSection() {
   const [timeLeft] = useState({ hours: 11, minutes: 42, seconds: 33 });
-  const [wallets, setWallets] = useState(defaultWallets);
+  const [cars, setCars] = useState(DEFAULT_CARS);
 
   useEffect(() => {
     base44.entities.SiteSettings.list().then(records => {
       if (records && records.length > 0) {
         const s = records[0];
-        const count = parseInt(s.wallet_count) || defaultWallets.length;
+        const dbCount = parseInt(s.car_count) || 0;
+        // Use the larger of DB count or DEFAULT_CARS length so new cars always show
+        const count = Math.max(dbCount, DEFAULT_CARS.length);
         const loaded = Array.from({ length: count }, (_, i) => ({
+          ...DEFAULT_CARS[i],
           index: i,
-          name: s[`wallet_${i + 1}_name`] || defaultWallets[i]?.name || '',
-          symbol: s[`wallet_${i + 1}_symbol`] || defaultWallets[i]?.symbol || '',
-          address: s[`wallet_${i + 1}_address`] || defaultWallets[i]?.address || '',
-          min: s[`wallet_${i + 1}_min`] || defaultWallets[i]?.min || '',
-          max: s[`wallet_${i + 1}_max`] || defaultWallets[i]?.max || '',
-          logo: s[`wallet_${i + 1}_logo`] || defaultWallets[i]?.logo || '',
+          name: s[`car_${i + 1}_name`] || DEFAULT_CARS[i]?.name || '',
+          tier: s[`car_${i + 1}_tier`] || DEFAULT_CARS[i]?.tier || '',
+          fee: s[`car_${i + 1}_fee`] || DEFAULT_CARS[i]?.fee || '',
+          delivery: s[`car_${i + 1}_delivery`] || DEFAULT_CARS[i]?.delivery || '',
+          img: s[`car_${i + 1}_img`] || DEFAULT_CARS[i]?.img || '',
         }));
-        setWallets(loaded);
+        setCars(loaded);
       }
     });
   }, []);
@@ -112,13 +373,22 @@ export default function ParticipateSection() {
   return (
     <section id="participate" className="py-20 bg-gray-50">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-black text-gray-900">
-            <span className="text-red-600">Participate</span> Now
-          </h2>
-          <p className="text-gray-600 mt-4 text-lg">Send crypto to the address below and receive double back!</p>
 
-          <div className="inline-flex items-center gap-6 mt-6 bg-white rounded-2xl px-8 py-4 shadow-md border border-gray-100">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-red-600/10 border border-red-200 rounded-full px-4 py-1.5 mb-4">
+            <Shield className="w-4 h-4 text-red-600" />
+            <span className="text-red-600 text-sm font-bold uppercase tracking-wide">Official BYD Global Giveaway</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900">
+            Choose Your <span className="text-red-600">BYD Electric Car</span>
+          </h2>
+          <p className="text-gray-500 mt-4 text-lg max-w-2xl mx-auto">
+            BYD is gifting brand new electric vehicles to participants worldwide. Select your model, pay the one-time delivery fee, and receive your car at your doorstep — anywhere in the world.
+          </p>
+
+          {/* Timer */}
+          <div className="inline-flex items-center gap-6 mt-8 bg-white rounded-2xl px-8 py-4 shadow-md border border-gray-100">
             <div className="flex items-center gap-2 text-red-600">
               <Clock className="w-5 h-5" />
               <span className="font-bold text-sm">Event ends in:</span>
@@ -141,19 +411,21 @@ export default function ParticipateSection() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {wallets.map((wallet, index) => (
-            <CryptoCard key={index} wallet={wallet} />
+        {/* Car Cards Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {cars.map((car) => (
+            <CarCard key={car.index} car={car} />
           ))}
         </div>
 
-        <div className="mt-8 bg-red-600 text-white rounded-2xl p-6 text-center">
-          <p className="font-bold text-lg">⚠️ Important Notice</p>
-          <p className="mt-2 text-red-100">
-            You can only participate once per wallet address. Make sure to send from a wallet you control.
-            Transactions are processed automatically by the smart contract.
+        {/* Notice */}
+        <div className="mt-10 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-3xl p-8 text-center shadow-xl">
+          <p className="font-black text-xl mb-2">⚡ BYD Electric — Built for the Future</p>
+          <p className="text-red-100 text-base max-w-3xl mx-auto leading-relaxed">
+            BYD is the world's <strong>#1 electric vehicle manufacturer</strong>, delivering industry-leading range, performance, and safety. Every giveaway vehicle is brand new, fully charged, and delivered with a full manufacturer's warranty. Each participant is eligible for <strong>one vehicle only</strong>. Your delivery fee covers all international shipping, customs clearance, and last-mile logistics. BYD guarantees safe, timely delivery to your door — anywhere in the world. 🌍🚗⚡
           </p>
         </div>
+
       </div>
     </section>
   );

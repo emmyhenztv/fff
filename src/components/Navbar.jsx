@@ -29,13 +29,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a8eb41a50eea87ead000ff/3b869c91c_images16.jpeg"
-              alt="MEME Coin Logo"
-              className="w-10 h-10 rounded-full object-cover object-top border-2 border-red-600"
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/ee3e404a3_IMG_20260306_163446_315.jpg"
+              alt="BYD Logo"
+              className="w-12 h-10 object-contain"
             />
             <div className="text-2xl font-black">
-              <span className="text-red-600">TRUMP</span>
-              <span className="text-gray-900"> MEME</span>
+              <span className="text-red-600">BYD</span>
+              <span className="text-gray-900"> Auto</span>
             </div>
           </div>
 

